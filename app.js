@@ -2,7 +2,15 @@
   'use strict';
 
   const URL_BANCO = 'data/condicoes.json';
-  const LS_VERSOES = 'rrp_versoes'; // suas versões salvas: { idDaCondicao: { campo: { t: texto, b: original } } }
+  const LS_VERSOES = 'rrp_versoes'; // { idDaCondicao: { campo: { t: texto, b: original } } }
+  const LS_FAV = 'rrp_favoritos'; // [ids]
+  const LS_REC = 'rrp_recentes'; // [ids]
+  const LS_BACKUP = 'rrp_ultimo_backup'; // data ISO do último backup
+  const LS_ALTERADO = 'rrp_alterado'; // data ISO da última mudança nos textos salvos
+  const MAX_RECENTES = 10;
+  const MOSTRAR_RECENTES = 5;
+  const NOME_APP = 'receita-rapida-plantao';
+
   // [campo do índice, peso na pontuação]
   const CAMPOS = [['nome', 5], ['cid', 5], ['sin', 4], ['sint', 2], ['tags', 1]];
   const ROTULO = { sin: 'sinônimo', sint: 'sintoma', tags: 'tag' };
@@ -11,12 +19,14 @@
     { campo: 'orientacoes', titulo: 'Orientações', extra: '' },
     { campo: 'sinais_alarme', titulo: 'Sinais de alarme', extra: 'alarme' },
   ];
+  const CAMPOS_TEXTO = BLOCOS.map((b) => b.campo);
   const TEM_COLCHETES = /\[[^\]]*\]/;
 
   const $app = document.getElementById('app');
   const $busca = document.getElementById('busca');
   const $limpar = document.getElementById('btn-limpar');
   const $tema = document.getElementById('btn-tema');
+  const $btnBackup = document.getElementById('btn-backup');
 
   let condicoes = [];
   let indice = [];
@@ -41,8 +51,18 @@
     catch (e) { return false; }
   }
 
+  function lerLista(chave) {
+    const v = lerLS(chave, []);
+    return Array.isArray(v) ? v.filter((x) => typeof x === 'string') : [];
+  }
+
   let versoes = lerLS(LS_VERSOES, {});
   if (!versoes || typeof versoes !== 'object' || Array.isArray(versoes)) versoes = {};
+  let favoritos = lerLista(LS_FAV);
+  let recentes = lerLista(LS_REC);
+
+  const agoraISO = () => new Date().toISOString();
+  const unicos = (a) => [...new Set(a)];
 
   // salva (ou apaga, se o texto for igual ao original) a sua versão de um bloco
   function gravarVersao(id, campo, valor, orig) {
@@ -53,7 +73,22 @@
     if (!Object.keys(copia[id]).length) delete copia[id];
     if (!gravarLS(LS_VERSOES, copia)) return false;
     versoes = copia;
+    gravarLS(LS_ALTERADO, agoraISO());
     return true;
+  }
+
+  function alternarFavorito(id) {
+    const nova = favoritos.slice();
+    const i = nova.indexOf(id);
+    if (i >= 0) nova.splice(i, 1); else nova.unshift(id);
+    if (!gravarLS(LS_FAV, nova)) return false;
+    favoritos = nova;
+    return true;
+  }
+
+  function registrarRecente(id) {
+    const nova = [id].concat(recentes.filter((x) => x !== id)).slice(0, MAX_RECENTES);
+    if (gravarLS(LS_REC, nova)) recentes = nova;
   }
 
   /* ---------- utilidades ---------- */
@@ -76,6 +111,11 @@
       .trim();
 
   const palavras = (v) => norm(v).split(' ').filter(Boolean);
+
+  const dataHora = (iso) => {
+    const d = new Date(iso);
+    return isNaN(d.getTime()) ? '' : d.toLocaleString('pt-BR');
+  };
 
   // distância de edição (inclui troca de letras vizinhas)
   function lev(a, b) {
@@ -154,7 +194,9 @@
       }
       if (ok) res.push({ c: it.c, score: total, campos });
     }
-    res.sort((a, b) => b.score - a.score || a.c.nome.localeCompare(b.c.nome, 'pt-BR'));
+    const ehFav = (x) => (favoritos.includes(x.c.id) ? 1 : 0);
+    res.sort((a, b) =>
+      b.score - a.score || ehFav(b) - ehFav(a) || a.c.nome.localeCompare(b.c.nome, 'pt-BR'));
     return res;
   }
 
@@ -188,9 +230,10 @@
     }, ms || 1600);
   }
 
+  // devolve true se copiou
   async function executarCopia(btn, rotulo, obterTexto, aoFalhar) {
     const txt = obterTexto();
-    if (!txt.trim()) { piscar(btn, 'Texto vazio', rotulo, 'erro'); return; }
+    if (!txt.trim()) { piscar(btn, 'Texto vazio', rotulo, 'erro'); return false; }
     const ok = await copiarTexto(txt);
     if (ok) {
       piscar(btn, 'Copiado ✓', rotulo, 'ok');
@@ -199,6 +242,7 @@
       piscar(btn, 'Não copiou. Copie manualmente', rotulo, 'erro', 3500);
       if (aoFalhar) aoFalhar();
     }
+    return ok;
   }
 
   // botão com confirmação em 2 toques quando "precisa()" for verdadeiro
@@ -232,9 +276,75 @@
       .join('\n\n');
   }
 
-  /* ---------- telas ---------- */
+  /* ---------- lista, favoritos e recentes ---------- */
+
+  function estrelaHTML(id, detalhe) {
+    const on = favoritos.includes(id);
+    return (
+      '<button type="button" class="estrela' + (on ? ' on' : '') + '" data-id="' + esc(id) + '"' +
+      (detalhe ? ' data-det="1"' : '') +
+      ' aria-pressed="' + on + '" aria-label="' + (on ? 'Remover dos favoritos' : 'Adicionar aos favoritos') + '">' +
+      (on ? '★' : '☆') + '</button>'
+    );
+  }
+
+  function atualizarEstrela(btn, id) {
+    const on = favoritos.includes(id);
+    btn.classList.toggle('on', on);
+    btn.textContent = on ? '★' : '☆';
+    btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', on ? 'Remover dos favoritos' : 'Adicionar aos favoritos');
+  }
+
+  function itemHTML(c, campos, compacto) {
+    const tags = compacto ? '' : (c.tags || []).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
+    let via = '';
+    if (!compacto && campos && consulta && !campos.has('nome') && !campos.has('cid')) {
+      const nomes = [...campos].map((k) => ROTULO[k]).filter(Boolean);
+      if (nomes.length) via = '<div class="via">encontrado em: ' + esc(nomes.join(', ')) + '</div>';
+    }
+    return (
+      '<li class="linha"><a class="item' + (compacto ? ' compacto' : '') + '" href="#/c/' + encodeURIComponent(c.id) + '">' +
+      '<div class="item-topo"><span class="item-nome">' + esc(c.nome) + '</span>' +
+      (c.cid ? '<span class="item-cid">' + esc(c.cid) + '</span>' : '') + '</div>' +
+      (tags ? '<div class="tags">' + tags + '</div>' : '') + via +
+      '</a>' + estrelaHTML(c.id, false) + '</li>'
+    );
+  }
+
+  function faixaBackup() {
+    if (!Object.keys(versoes).length) return '';
+    const ult = lerLS(LS_BACKUP, null);
+    const alt = lerLS(LS_ALTERADO, null);
+    if (ult && (!alt || ult >= alt)) return '';
+    return '<a class="faixa" href="#/backup">💾 Você tem textos editados sem backup. Toque para fazer o backup.</a>';
+  }
+
+  function renderHome() {
+    const todas = buscar('');
+    if (!todas.length) {
+      $app.innerHTML = '<div class="vazio"><p>Nenhuma condição no banco ainda.</p></div>';
+      return;
+    }
+    const porId = new Map(condicoes.map((c) => [c.id, c]));
+    const favs = favoritos.map((id) => porId.get(id)).filter(Boolean);
+    const recs = recentes.map((id) => porId.get(id)).filter(Boolean).slice(0, MOSTRAR_RECENTES);
+    let html = faixaBackup();
+    if (favs.length) {
+      html += '<h2 class="secao">★ Favoritos</h2><ul class="lista">' +
+        favs.map((c) => itemHTML(c, null, true)).join('') + '</ul>';
+    }
+    if (recs.length) {
+      html += '<h2 class="secao">Recentes</h2><ul class="lista">' +
+        recs.map((c) => itemHTML(c, null, true)).join('') + '</ul>';
+    }
+    html += '<h2 class="secao">Todas as condições (' + todas.length + ')</h2><ul class="lista">' +
+      todas.map((r) => itemHTML(r.c, r.campos, false)).join('') + '</ul>';
+    $app.innerHTML = html;
+  }
 
   function renderLista() {
+    if (!norm(consulta)) { renderHome(); return; }
     const res = buscar(consulta);
     if (!res.length) {
       $app.innerHTML =
@@ -242,25 +352,12 @@
         '<p>Tente outra palavra, o sintoma ou o código CID.</p></div>';
       return;
     }
-    const itens = res.map(({ c, campos }) => {
-      const tags = (c.tags || []).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
-      let via = '';
-      if (consulta && !campos.has('nome') && !campos.has('cid')) {
-        const nomes = [...campos].map((k) => ROTULO[k]).filter(Boolean);
-        if (nomes.length) via = '<div class="via">encontrado em: ' + esc(nomes.join(', ')) + '</div>';
-      }
-      return (
-        '<li><a class="item" href="#/c/' + encodeURIComponent(c.id) + '">' +
-        '<div class="item-topo"><span class="item-nome">' + esc(c.nome) + '</span>' +
-        (c.cid ? '<span class="item-cid">' + esc(c.cid) + '</span>' : '') + '</div>' +
-        (tags ? '<div class="tags">' + tags + '</div>' : '') + via +
-        '</a></li>'
-      );
-    }).join('');
     $app.innerHTML =
       '<p class="contagem">' + res.length + (res.length === 1 ? ' condição' : ' condições') + '</p>' +
-      '<ul class="lista">' + itens + '</ul>';
+      '<ul class="lista">' + res.map((r) => itemHTML(r.c, r.campos, false)).join('') + '</ul>';
   }
+
+  /* ---------- tela da condição ---------- */
 
   const ajustar = (ta) => {
     ta.style.height = 'auto';
@@ -381,12 +478,13 @@
         '<div class="vazio"><p>Condição não encontrada.</p></div>';
       return;
     }
+    registrarRecente(c.id);
     estado = {};
     const tags = (c.tags || []).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
     $app.innerHTML =
       '<a class="voltar" href="#/">← Voltar</a>' +
       '<article class="cond">' +
-      '<h2>' + esc(c.nome) + '</h2>' +
+      '<div class="titulo-cond"><h2>' + esc(c.nome) + '</h2>' + estrelaHTML(c.id, true) + '</div>' +
       '<div class="meta">' + (c.cid ? '<span>CID-10 ' + esc(c.cid) + '</span>' : '') + tags + '</div>' +
       (c.revisado === true ? '' : '<p class="aviso-rev">⚠ Conteúdo ainda não revisado por você. Confira antes de usar.</p>') +
       (c.nota_revisao
@@ -409,106 +507,199 @@
     requestAnimationFrame(() => BLOCOS.forEach((b) => ajustar(estado[b.campo].ta)));
   }
 
-  function mostrarErro(e) {
-    $app.innerHTML =
-      '<div class="erro"><h2>Não consegui carregar o banco de condições</h2>' +
-      '<p><code>' + esc(e && e.message ? e.message : e) + '</code></p>' +
-      '<ul><li>Abra o app pelo endereço publicado (https://...), não pelo arquivo salvo no celular.</li>' +
-      '<li>Se você editou o <code>condicoes.json</code>, confira vírgulas, aspas e colchetes.</li></ul>' +
-      '<button class="btn" type="button" id="btn-recarregar">Tentar de novo</button></div>';
-    document.getElementById('btn-recarregar').addEventListener('click', () => location.reload());
+  /* ---------- backup ---------- */
+
+  function montarBackup() {
+    return {
+      app: NOME_APP,
+      formato: 1,
+      exportado_em: agoraISO(),
+      versoes,
+      favoritos,
+      recentes,
+    };
   }
 
-  /* ---------- rotas ---------- */
-
-  function rotear() {
-    if (!pronto) return;
-    const m = (location.hash || '#/').match(/^#\/c\/(.+)$/);
-    if (m) {
-      let id = m[1];
-      try { id = decodeURIComponent(id); } catch (e) {}
-      renderCondicao(id);
-    } else {
-      renderLista();
-      window.scrollTo(0, scrollLista);
-      scrollLista = 0;
-    }
+  function nomeArquivo() {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, '0');
+    return 'backup-receita-rapida-' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '.json';
   }
 
-  $app.addEventListener('click', (e) => {
-    if (e.target.closest('a.item')) {
-      scrollLista = window.scrollY;
-      abriuDaLista = true;
-      return;
-    }
-    if (e.target.closest('.voltar')) {
-      e.preventDefault();
-      if (abriuDaLista) { abriuDaLista = false; history.back(); }
-      else { location.hash = '#/'; }
-    }
-  });
+  function baixar(nome, conteudo) {
+    const blob = new Blob([conteudo], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nome;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  }
 
-  /* ---------- busca na tela ---------- */
+  function marcarBackup() { gravarLS(LS_BACKUP, agoraISO()); }
 
-  function aoDigitar() {
-    consulta = $busca.value;
-    $limpar.hidden = !consulta;
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      if ((location.hash || '').startsWith('#/c/')) {
-        history.replaceState(null, '', '#/');
-        abriuDaLista = false;
+  function contarVersoes(v) {
+    let n = 0;
+    for (const id of Object.keys(v)) {
+      if (v[id] && typeof v[id] === 'object') n += Object.keys(v[id]).length;
+    }
+    return n;
+  }
+
+  function resumoExport() {
+    const ult = lerLS(LS_BACKUP, null);
+    return (
+      contarVersoes(versoes) + ' texto(s) editado(s) · ' + favoritos.length + ' favorito(s) · ' +
+      (ult && dataHora(ult) ? 'último backup: ' + dataHora(ult) : 'nenhum backup feito ainda')
+    );
+  }
+
+  function validarBackup(txt) {
+    let o;
+    try { o = JSON.parse(txt); } catch (e) { throw new Error('O texto não é um JSON válido.'); }
+    if (!o || o.app !== NOME_APP) throw new Error('Este arquivo não é um backup do Receita Rápida Plantão.');
+    if (o.formato !== 1) throw new Error('Versão de backup não suportada (formato ' + o.formato + ').');
+    const v = {};
+    let nVers = 0;
+    if (o.versoes && typeof o.versoes === 'object' && !Array.isArray(o.versoes)) {
+      for (const id of Object.keys(o.versoes)) {
+        if (id === '__proto__' || id === 'constructor' || id === 'prototype') continue;
+        const blocos = o.versoes[id];
+        if (!blocos || typeof blocos !== 'object') continue;
+        for (const campo of CAMPOS_TEXTO) {
+          const r = blocos[campo];
+          if (r && typeof r.t === 'string') {
+            if (!v[id]) v[id] = {};
+            v[id][campo] = { t: r.t, b: typeof r.b === 'string' ? r.b : '' };
+            nVers++;
+          }
+        }
       }
-      scrollLista = 0;
-      renderLista();
-      window.scrollTo(0, 0);
-    }, 90);
+    }
+    const lista = (a) => (Array.isArray(a) ? a.filter((x) => typeof x === 'string') : []);
+    return {
+      versoes: v,
+      nVers,
+      favoritos: lista(o.favoritos),
+      recentes: lista(o.recentes),
+      data: typeof o.exportado_em === 'string' ? o.exportado_em : null,
+    };
   }
 
-  $busca.addEventListener('input', aoDigitar);
-  $busca.addEventListener('keydown', (e) => { if (e.key === 'Enter') $busca.blur(); });
-  $limpar.addEventListener('click', () => {
-    $busca.value = '';
-    $busca.focus();
-    aoDigitar();
-  });
+  // mescla o backup com o que já existe no aparelho
+  function aplicarImport(p) {
+    const novasV = JSON.parse(JSON.stringify(versoes));
+    for (const id of Object.keys(p.versoes)) {
+      const atual = novasV[id] && typeof novasV[id] === 'object' ? novasV[id] : {};
+      novasV[id] = Object.assign({}, atual, p.versoes[id]);
+    }
+    const novosF = unicos(favoritos.concat(p.favoritos));
+    const novosR = unicos(recentes.concat(p.recentes)).slice(0, MAX_RECENTES);
+    if (!gravarLS(LS_VERSOES, novasV) || !gravarLS(LS_FAV, novosF) || !gravarLS(LS_REC, novosR)) return false;
+    gravarLS(LS_ALTERADO, agoraISO());
+    versoes = novasV;
+    favoritos = novosF;
+    recentes = novosR;
+    return true;
+  }
 
-  $tema.addEventListener('click', () => {
-    const el = document.documentElement;
-    const atual = el.dataset.tema ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
-    const novo = atual === 'escuro' ? 'claro' : 'escuro';
-    el.dataset.tema = novo;
-    try { localStorage.setItem('rrp_tema', novo); } catch (e) {}
-  });
+  function lerArquivo(f) {
+    if (f.text) return f.text();
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = () => rej(r.error);
+      r.readAsText(f);
+    });
+  }
 
-  window.addEventListener('hashchange', rotear);
-
-  /* ---------- carga do banco ---------- */
-
-  async function carregar() {
-    $app.innerHTML = '<p class="carregando">Carregando…</p>';
+  function podeCompartilharArquivo() {
     try {
-      const r = await fetch(URL_BANCO, { cache: 'no-cache' });
-      if (!r.ok) throw new Error('Arquivo ' + URL_BANCO + ' não encontrado (HTTP ' + r.status + ').');
-      const dados = await r.json();
-      if (!dados || !Array.isArray(dados.condicoes)) {
-        throw new Error('Formato inválido: falta a lista "condicoes" no JSON.');
-      }
-      const vistos = new Set();
-      condicoes = dados.condicoes.filter((c) => {
-        if (!c || !c.id || !c.nome) { console.warn('Condição ignorada (sem id ou nome):', c); return false; }
-        if (vistos.has(c.id)) { console.warn('id repetido, ignorado:', c.id); return false; }
-        vistos.add(c.id);
-        return true;
-      });
-      indice = condicoes.map(construirIndice);
-      pronto = true;
-      rotear();
-    } catch (e) {
-      mostrarErro(e);
-    }
+      const teste = new File(['{}'], 'x.json', { type: 'application/json' });
+      return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [teste] }));
+    } catch (e) { return false; }
   }
 
-  carregar();
-})();
+  function renderBackup() {
+    $app.innerHTML =
+      '<a class="voltar" href="#/">← Voltar</a>' +
+      '<h2>Backup</h2>' +
+      '<p class="suave">Seus textos editados, favoritos e recentes ficam só neste navegador. ' +
+      'Faça um backup de vez em quando e guarde o arquivo em um lugar seguro (Drive, e-mail, WhatsApp para você).</p>' +
+      '<section class="bloco"><div class="bloco-topo"><h3>Exportar</h3></div>' +
+      '<p class="suave" id="resumo-exp"></p>' +
+      '<div class="acoes-col">' +
+      '<button type="button" class="btn cheio" id="exp-baixar">Baixar arquivo de backup</button>' +
+      '<button type="button" class="btn-sec cheio" id="exp-compartilhar" hidden>Compartilhar / salvar em…</button>' +
+      '<button type="button" class="btn-sec cheio" id="exp-copiar">Copiar JSON</button>' +
+      '</div></section>' +
+      '<section class="bloco"><div class="bloco-topo"><h3>Importar</h3></div>' +
+      '<p class="suave">Escolha um arquivo de backup. Ele será mesclado ao que já existe neste aparelho.</p>' +
+      '<input type="file" id="imp-arquivo" accept=".json,application/json">' +
+      '<p class="suave">Ou cole o conteúdo do backup aqui:</p>' +
+      '<textarea class="campo" id="imp-texto" spellcheck="false" autocapitalize="off" autocorrect="off" ' +
+      'aria-label="Colar backup"></textarea>' +
+      '<button type="button" class="btn-sec cheio" id="imp-colado" style="margin-top:10px">Ler texto colado</button>' +
+      '<div id="imp-resumo"></div></section>';
+
+    const $resumoExp = document.getElementById('resumo-exp');
+    const atualizarResumo = () => { $resumoExp.textContent = resumoExport(); };
+    atualizarResumo();
+
+    // exportar
+    const btnBaixar = document.getElementById('exp-baixar');
+    btnBaixar.addEventListener('click', () => {
+      try {
+        baixar(nomeArquivo(), JSON.stringify(montarBackup(), null, 2));
+        marcarBackup();
+        atualizarResumo();
+        piscar(btnBaixar, 'Backup gerado ✓', 'Baixar arquivo de backup', 'ok');
+      } catch (e) {
+        piscar(btnBaixar, 'Falhou. Use "Copiar JSON"', 'Baixar arquivo de backup', 'erro', 3500);
+      }
+    });
+
+    const btnShare = document.getElementById('exp-compartilhar');
+    if (podeCompartilharArquivo()) {
+      btnShare.hidden = false;
+      btnShare.addEventListener('click', async () => {
+        try {
+          const arq = new File([JSON.stringify(montarBackup(), null, 2)], nomeArquivo(), { type: 'application/json' });
+          await navigator.share({ files: [arq], title: 'Backup Receita Rápida Plantão' });
+          marcarBackup();
+          atualizarResumo();
+          piscar(btnShare, 'Compartilhado ✓', 'Compartilhar / salvar em…', 'ok');
+        } catch (e) {
+          if (e && e.name === 'AbortError') return;
+          piscar(btnShare, 'Falhou. Use "Copiar JSON"', 'Compartilhar / salvar em…', 'erro', 3500);
+        }
+      });
+    }
+
+    const btnCopiarJson = document.getElementById('exp-copiar');
+    btnCopiarJson.addEventListener('click', async () => {
+      const ok = await executarCopia(btnCopiarJson, 'Copiar JSON', () => JSON.stringify(montarBackup(), null, 2));
+      if (ok) { marcarBackup(); atualizarResumo(); }
+    });
+
+    // importar
+    const $resumoImp = document.getElementById('imp-resumo');
+    let pendente = null;
+
+    function mostrarPendente(txt) {
+      try {
+        pendente = validarBackup(txt);
+      } catch (e) {
+        pendente = null;
+        $resumoImp.innerHTML = '<p class="erro-txt">' + esc(e.message) + '</p>';
+        return;
+      }
+      const p = pendente;
+      const quando = p.data && dataHora(p.data) ? ' de ' + esc(dataHora(p.data)) : '';
+      $resumoImp.innerHTML =
+        '<div class="resumo-import"><p><strong>Backup encontrado' + quando + '</strong><br>' +
+        p.nVers + ' texto(s) editado(s), ' + p.favoritos.length + ' favorito(s), ' +
+        p.recentes.length + ' recente(s).</p>' +
+        '<p>Será <strong>mesclado</strong> ao que já existe aqui. Se o mesmo bloco já tiver uma versão sua, ' +
