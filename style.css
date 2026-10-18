@@ -1,5 +1,7 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+[hidden] { display: none !important; }
+
 :root {
   --bg: #f3f5f7;
   --card: #ffffff;
@@ -7,6 +9,7 @@
   --suave: #475467;
   --borda: #cfd6dd;
   --primaria: #0b6b63;
+  --on-primaria: #ffffff;
   --tag-bg: #dff3f0;
   --tag-txt: #0b514b;
   --alerta-bg: #fff1f0;
@@ -24,6 +27,7 @@
     --suave: #aab6c0;
     --borda: #2b3842;
     --primaria: #3fd1c2;
+    --on-primaria: #06201d;
     --tag-bg: #12332f;
     --tag-txt: #9be8de;
     --alerta-bg: #2b1513;
@@ -41,6 +45,7 @@
   --suave: #aab6c0;
   --borda: #2b3842;
   --primaria: #3fd1c2;
+  --on-primaria: #06201d;
   --tag-bg: #12332f;
   --tag-txt: #9be8de;
   --alerta-bg: #2b1513;
@@ -161,21 +166,45 @@ body {
 .erro h2 { margin-top: 0; font-size: 1.1rem; color: var(--alerta-borda); }
 .erro code { word-break: break-word; }
 
+/* botões */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 52px;
-  padding: 0 20px;
+  padding: 10px 20px;
+  font: inherit;
   font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--on-primaria);
   background: var(--primaria);
   border: 0;
   border-radius: 12px;
 }
 
-:root[data-tema="escuro"] .btn { color: #06201d; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-tema="claro"]) .btn { color: #06201d; }
+.btn.cheio { width: 100%; min-height: 58px; font-size: 1.1rem; }
+.btn.ok { background: #1f9d55; color: #fff; }
+.btn.armado { background: #b45309; color: #fff; }
+.btn.erro { background: #b42318; color: #fff; }
+
+.btn-sec {
+  flex: 1 1 auto;
+  min-height: 48px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.2;
+  color: var(--primaria);
+  background: transparent;
+  border: 1.5px solid var(--primaria);
+  border-radius: 12px;
 }
+
+.btn-sec.principal { color: var(--on-primaria); background: var(--primaria); }
+.btn-sec.armado { color: #fff; background: #b45309; border-color: #b45309; }
 
 .voltar {
   display: inline-flex;
@@ -211,6 +240,7 @@ body {
 .nota summary { font-weight: 600; min-height: 32px; }
 .nota p { margin: 8px 0 0; color: var(--suave); }
 
+/* blocos editáveis */
 .bloco {
   background: var(--card);
   border: 1px solid var(--borda);
@@ -222,21 +252,65 @@ body {
 
 .bloco.alarme { border-left-color: var(--alerta-borda); background: var(--alerta-bg); }
 
+.bloco-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 .bloco h3 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 0.85rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--suave);
 }
 
-.texto {
-  margin: 0;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+.selo {
+  background: var(--tag-bg);
+  color: var(--tag-txt);
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.selo.aviso { background: var(--aviso-bg); color: var(--aviso-txt); }
+
+.campo {
+  display: block;
+  width: 100%;
+  min-height: 110px;
+  padding: 12px;
   font: inherit;
   font-size: 1rem;
   line-height: 1.5;
+  color: var(--texto);
+  background: var(--bg);
+  border: 1.5px solid var(--borda);
+  border-radius: 12px;
+  resize: none;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.campo:focus { outline: none; border-color: var(--primaria); }
+
+.btn-copiar { width: 100%; margin-top: 10px; }
+
+.edicao { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* barra fixa de "Copiar tudo" */
+.barra-copiar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin: 0 -12px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  border-top: 1px solid var(--borda);
 }
 
 .rodape {
