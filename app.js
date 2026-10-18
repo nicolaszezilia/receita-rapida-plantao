@@ -466,4 +466,594 @@
     const blocosC = BLOCOS.filter((b) => textoBloco(c, b) !== '');
     const tudo = montarTudo(c);
     const tags =
-      (c.propria ? '<span class="tag minha">Minha condição</span>' :
+      (c.propria ? '<span class="tag minha">Minha condição</span>' : '') +
+      (c.tags || []).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
+    $app.innerHTML =
+      '<a class="voltar" href="#/">← Voltar</a>' +
+      '<article class="cond">' +
+      '<div class="titulo-cond"><h2>' + esc(c.nome) + '</h2>' + estrelaHTML(c.id, true) + '</div>' +
+      '<div class="meta">' + (c.cid ? '<span>CID-10 ' + esc(c.cid) + '</span>' : '') + tags + '</div>' +
+      (c.revisado === true ? '' : '<p class="aviso-rev">⚠ Conteúdo ainda não revisado por você. Confira antes de usar.</p>') +
+      (c.nota_revisao
+        ? '<details class="nota"><summary>Nota para revisão</summary><p>' + esc(texto(c.nota_revisao)) + '</p></details>'
+        : '') +
+      (blocosC.length
+        ? blocosC.map((b) => blocoHTML(c, b)).join('')
+        : '<div class="vazio"><p>Esta condição ainda não tem texto.</p></div>') +
+      '<div class="acoes-col" style="margin-top:6px">' +
+      (c.propria
+        ? '<a class="btn-sec cheio" href="#/editar/' + encodeURIComponent(c.id) + '">Editar cadastro (nome, CID, busca)</a>'
+        : '') +
+      '<button type="button" class="btn-sec cheio" id="btn-duplicar">Duplicar como nova condição</button>' +
+      (c.propria
+        ? '<button type="button" class="btn-sec cheio perigo" id="btn-excluir">Excluir esta condição</button>'
+        : '') +
+      '</div>' +
+      '</article>' +
+      (tudo ? '<div class="barra-copiar"><button type="button" class="btn cheio" id="btn-tudo">Copiar tudo</button></div>' : '');
+
+    blocosC.forEach((b) => {
+      const btn = $app.querySelector('[data-copiar="' + b.campo + '"]');
+      const area = $app.querySelector('[data-texto="' + b.campo + '"]');
+      ligarBotao(btn, {
+        rotulo: b.copiar,
+        aviso: 'Tem [campos]. Copiar mesmo assim?',
+        precisa: () => TEM_COLCHETES.test(textoBloco(c, b)),
+        acao: (bt, rotulo) => executarCopia(bt, rotulo, () => textoBloco(c, b), () => selecionar(area)),
+      });
+    });
+
+    if (tudo) {
+      ligarBotao(document.getElementById('btn-tudo'), {
+        rotulo: 'Copiar tudo',
+        aviso: 'Tem [campos]. Copiar tudo mesmo assim?',
+        precisa: () => TEM_COLCHETES.test(tudo),
+        acao: (bt, rotulo) => executarCopia(bt, rotulo, () => tudo),
+      });
+    }
+
+    document.getElementById('btn-duplicar').addEventListener('click', () => {
+      formInicial = {
+        nome: c.nome + ' (cópia)',
+        cid: c.cid || '',
+        tags: c.tags || [],
+        sinonimos: c.sinonimos || [],
+        sintomas: c.sintomas || [],
+        prescricao_ps: texto(c.prescricao_ps),
+        receita: texto(c.receita),
+        orientacoes: texto(c.orientacoes),
+        sinais_alarme: texto(c.sinais_alarme),
+        revisado: c.revisado === true,
+      };
+      aoNavegar();
+      location.hash = '#/nova';
+    });
+
+    if (c.propria) {
+      ligarBotao(document.getElementById('btn-excluir'), {
+        rotulo: 'Excluir esta condição',
+        aviso: 'Toque de novo para EXCLUIR de vez',
+        precisa: () => true,
+        acao: () => excluirPropria(c.id),
+      });
+    }
+
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- formulário: nova condição / editar cadastro ---------- */
+
+  const listar = (s) => unicos(s.split(/[\n,;]+/).map((x) => x.trim()).filter(Boolean));
+
+  function novoId(nome) {
+    const slug = norm(nome).replace(/ /g, '-').slice(0, 40) || 'condicao';
+    return 'usr-' + slug + '-' + Date.now().toString(36);
+  }
+
+  function renderForm(id) {
+    const editando = id ? proprias.find((c) => c.id === id) : null;
+    if (id && !editando) {
+      $app.innerHTML =
+        '<a class="voltar" href="#/">← Voltar</a>' +
+        '<div class="vazio"><p>Só condições criadas por você podem ter o cadastro editado. ' +
+        'Para mudar uma condição do banco, use “Duplicar como nova condição”.</p></div>';
+      return;
+    }
+    const ini = editando || formInicial || {};
+    formInicial = null;
+
+    const entrada = (k, rot, dica, extra) =>
+      '<div class="grupo"><label class="rotulo" for="' + k + '">' + rot + '</label>' +
+      '<input class="entrada" id="' + k + '" type="text" autocomplete="off" spellcheck="false" ' + (extra || '') + '>' +
+      (dica ? '<p class="dica">' + dica + '</p>' : '') + '</div>';
+    const area = (k, rot, dica, curto) =>
+      '<div class="grupo"><label class="rotulo" for="' + k + '">' + rot + '</label>' +
+      '<textarea class="campo' + (curto ? ' curto' : '') + '" id="' + k + '" spellcheck="false" ' +
+      'autocapitalize="off" autocorrect="off"></textarea>' +
+      (dica ? '<p class="dica">' + dica + '</p>' : '') + '</div>';
+
+    $app.innerHTML =
+      '<a class="voltar" href="#/">← Voltar</a>' +
+      '<h2>' + (editando ? 'Editar condição' : 'Nova condição') + '</h2>' +
+      '<p class="suave">A busca procura por nome, sinônimos, sintomas, CID e tags. ' +
+      'Nada é validado pelo app: confira doses e CID antes de usar.</p>' +
+      '<div class="form">' +
+      entrada('f-nome', 'Nome da condição *', '', 'autocapitalize="sentences"') +
+      entrada('f-cid', 'CID-10', 'Digite o código que você conferiu (ex.: J03.0). O app não preenche sozinho.', 'autocapitalize="characters"') +
+      entrada('f-tags', 'Tags', 'Separe por vírgula. Ex.: Respiratório, Pediatria', 'autocapitalize="sentences"') +
+      area('f-sin', 'Sinônimos', 'Um por linha (ou separados por vírgula). Ex.: amigdalite, dor de garganta', true) +
+      area('f-sint', 'Sintomas associados', 'Um por linha (ou separados por vírgula). Ex.: febre, odinofagia', true) +
+      area('f-ps', 'Prescrição no PS / hospitalar (opcional)', 'Só aparece na condição se tiver texto. Não entra no «Copiar tudo».') +
+      area('f-receita', 'Receita', 'Use [colchetes] para o que precisa ser preenchido ou apagado antes de copiar. Ex.: [peso] kg') +
+      area('f-orient', 'Orientações ao paciente', '') +
+      area('f-alarme', 'Sinais de alarme', '') +
+      '<div class="grupo"><label class="check"><input type="checkbox" id="f-rev"> Conteúdo revisado por mim</label>' +
+      '<p class="dica">Se desmarcado, a condição mostra o aviso “ainda não revisado”.</p></div>' +
+      '<p class="erro-txt" id="f-erro" hidden></p>' +
+      '</div>' +
+      '<div class="barra-copiar"><div class="barra-dupla">' +
+      '<button type="button" class="btn-sec" id="f-cancelar">Cancelar</button>' +
+      '<button type="button" class="btn" id="f-salvar">Salvar</button>' +
+      '</div></div>';
+
+    const $ = (k) => document.getElementById(k);
+    $('f-nome').value = ini.nome || '';
+    $('f-cid').value = ini.cid || '';
+    $('f-tags').value = (ini.tags || []).join(', ');
+    $('f-sin').value = (ini.sinonimos || []).join('\n');
+    $('f-sint').value = (ini.sintomas || []).join('\n');
+    $('f-ps').value = texto(ini.prescricao_ps);
+    $('f-receita').value = texto(ini.receita);
+    $('f-orient').value = texto(ini.orientacoes);
+    $('f-alarme').value = texto(ini.sinais_alarme);
+    $('f-rev').checked = editando ? editando.revisado === true : ini.revisado !== false;
+
+    const areas = ['f-sin', 'f-sint', 'f-ps', 'f-receita', 'f-orient', 'f-alarme'];
+    areas.forEach((k) => {
+      const ta = $(k);
+      ta.addEventListener('input', () => ajustar(ta));
+      ajustar(ta);
+    });
+    requestAnimationFrame(() => areas.forEach((k) => ajustar($(k))));
+
+    $('f-cancelar').addEventListener('click', () => {
+      if (abriuDaLista) { abriuDaLista = false; history.back(); }
+      else { location.hash = '#/'; }
+    });
+
+    $('f-salvar').addEventListener('click', () => {
+      const nome = $('f-nome').value.trim();
+      const $erro = $('f-erro');
+      if (!nome) {
+        $erro.textContent = 'Informe o nome da condição.';
+        $erro.hidden = false;
+        $('f-nome').focus();
+        return;
+      }
+      $erro.hidden = true;
+      const dados = {
+        nome,
+        cid: $('f-cid').value.trim(),
+        tags: listar($('f-tags').value),
+        sinonimos: listar($('f-sin').value),
+        sintomas: listar($('f-sint').value),
+        prescricao_ps: $('f-ps').value.trim(),
+        receita: $('f-receita').value.trim(),
+        orientacoes: $('f-orient').value.trim(),
+        sinais_alarme: $('f-alarme').value.trim(),
+        revisado: $('f-rev').checked,
+      };
+      const antes = JSON.parse(JSON.stringify(proprias));
+      let alvo;
+      if (editando) {
+        Object.assign(editando, dados);
+        alvo = editando;
+      } else {
+        alvo = Object.assign({ id: novoId(nome), propria: true }, dados);
+        proprias.push(alvo);
+      }
+      if (!gravarLS(LS_PROPRIAS, proprias)) {
+        proprias = antes;
+        reconstruir();
+        alert('Não consegui salvar neste navegador (modo anônimo ou armazenamento bloqueado).');
+        return;
+      }
+      gravarLS(LS_ALTERADO, agoraISO());
+      reconstruir();
+      abriuDaLista = false;
+      history.replaceState(null, '', '#/c/' + encodeURIComponent(alvo.id));
+      rotear();
+    });
+
+    window.scrollTo(0, 0);
+    if (!$('f-nome').value) $('f-nome').focus();
+  }
+
+  /* ---------- backup ---------- */
+
+  function montarBackup() {
+    return {
+      app: NOME_APP,
+      formato: 1,
+      exportado_em: agoraISO(),
+      condicoes_proprias: proprias,
+      favoritos,
+      recentes,
+    };
+  }
+
+  function nomeArquivo() {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, '0');
+    return 'backup-receita-rapida-' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '.json';
+  }
+
+  function baixar(nome, conteudo) {
+    const blob = new Blob([conteudo], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nome;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  }
+
+  function marcarBackup() { gravarLS(LS_BACKUP, agoraISO()); }
+
+  function resumoExport() {
+    const ult = lerLS(LS_BACKUP, null);
+    return (
+      proprias.length + ' condição(ões) própria(s) · ' + favoritos.length + ' favorito(s) · ' +
+      (ult && dataHora(ult) ? 'último backup: ' + dataHora(ult) : 'nenhum backup feito ainda')
+    );
+  }
+
+  function validarBackup(txt) {
+    let o;
+    try { o = JSON.parse(txt); } catch (e) { throw new Error('O texto não é um JSON válido.'); }
+    if (!o || o.app !== NOME_APP) throw new Error('Este arquivo não é um backup do Receita Rápida Plantão.');
+    if (o.formato !== 1) throw new Error('Versão de backup não suportada (formato ' + o.formato + ').');
+    const vistos = new Set();
+    const ps = (Array.isArray(o.condicoes_proprias) ? o.condicoes_proprias : [])
+      .map(sanearCondicao)
+      .filter((c) => {
+        if (!c || vistos.has(c.id)) return false;
+        vistos.add(c.id);
+        return true;
+      });
+    const lista = (a) => (Array.isArray(a) ? a.filter((x) => typeof x === 'string') : []);
+    return {
+      proprias: ps,
+      favoritos: lista(o.favoritos),
+      recentes: lista(o.recentes),
+      data: typeof o.exportado_em === 'string' ? o.exportado_em : null,
+    };
+  }
+
+  // mescla o backup com o que já existe no aparelho
+  function aplicarImport(p) {
+    const novasP = proprias.slice();
+    for (const c of p.proprias) {
+      const i = novasP.findIndex((x) => x.id === c.id);
+      if (i >= 0) novasP[i] = c; else novasP.push(c);
+    }
+    const novosF = unicos(favoritos.concat(p.favoritos));
+    const novosR = unicos(recentes.concat(p.recentes)).slice(0, MAX_RECENTES);
+    if (!gravarLS(LS_PROPRIAS, novasP) || !gravarLS(LS_FAV, novosF) || !gravarLS(LS_REC, novosR)) return false;
+    gravarLS(LS_ALTERADO, agoraISO());
+    proprias = novasP;
+    favoritos = novosF;
+    recentes = novosR;
+    reconstruir();
+    return true;
+  }
+
+  function lerArquivo(f) {
+    if (f.text) return f.text();
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = () => rej(r.error);
+      r.readAsText(f);
+    });
+  }
+
+  function podeCompartilharArquivo() {
+    try {
+      const teste = new File(['{}'], 'x.json', { type: 'application/json' });
+      return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [teste] }));
+    } catch (e) { return false; }
+  }
+
+  function renderBackup() {
+    $app.innerHTML =
+      '<a class="voltar" href="#/">← Voltar</a>' +
+      '<h2>Backup</h2>' +
+      '<p class="suave">Suas condições criadas, favoritos e recentes ficam só neste navegador. ' +
+      'Faça um backup de vez em quando e guarde o arquivo em um lugar seguro (Drive, e-mail, WhatsApp para você).</p>' +
+      '<section class="bloco"><div class="bloco-topo"><h3>Exportar</h3></div>' +
+      '<p class="suave" id="resumo-exp"></p>' +
+      '<div class="acoes-col">' +
+      '<button type="button" class="btn cheio" id="exp-baixar">Baixar arquivo de backup</button>' +
+      '<button type="button" class="btn-sec cheio" id="exp-compartilhar" hidden>Compartilhar / salvar em…</button>' +
+      '<button type="button" class="btn-sec cheio" id="exp-copiar">Copiar JSON</button>' +
+      '</div></section>' +
+      '<section class="bloco"><div class="bloco-topo"><h3>Importar</h3></div>' +
+      '<p class="suave">Escolha um arquivo de backup. Ele será mesclado ao que já existe neste aparelho.</p>' +
+      '<input type="file" id="imp-arquivo" accept=".json,application/json">' +
+      '<p class="suave">Ou cole o conteúdo do backup aqui:</p>' +
+      '<textarea class="campo" id="imp-texto" spellcheck="false" autocapitalize="off" autocorrect="off" ' +
+      'aria-label="Colar backup"></textarea>' +
+      '<button type="button" class="btn-sec cheio" id="imp-colado" style="margin-top:10px">Ler texto colado</button>' +
+      '<div id="imp-resumo"></div></section>';
+
+    const $resumoExp = document.getElementById('resumo-exp');
+    const atualizarResumo = () => { $resumoExp.textContent = resumoExport(); };
+    atualizarResumo();
+
+    // exportar
+    const btnBaixar = document.getElementById('exp-baixar');
+    btnBaixar.addEventListener('click', () => {
+      try {
+        baixar(nomeArquivo(), JSON.stringify(montarBackup(), null, 2));
+        marcarBackup();
+        atualizarResumo();
+        piscar(btnBaixar, 'Backup gerado ✓', 'Baixar arquivo de backup', 'ok');
+      } catch (e) {
+        piscar(btnBaixar, 'Falhou. Use "Copiar JSON"', 'Baixar arquivo de backup', 'erro', 3500);
+      }
+    });
+
+    const btnShare = document.getElementById('exp-compartilhar');
+    if (podeCompartilharArquivo()) {
+      btnShare.hidden = false;
+      btnShare.addEventListener('click', async () => {
+        try {
+          const arq = new File([JSON.stringify(montarBackup(), null, 2)], nomeArquivo(), { type: 'application/json' });
+          await navigator.share({ files: [arq], title: 'Backup Receita Rápida Plantão' });
+          marcarBackup();
+          atualizarResumo();
+          piscar(btnShare, 'Compartilhado ✓', 'Compartilhar / salvar em…', 'ok');
+        } catch (e) {
+          if (e && e.name === 'AbortError') return;
+          piscar(btnShare, 'Falhou. Use "Copiar JSON"', 'Compartilhar / salvar em…', 'erro', 3500);
+        }
+      });
+    }
+
+    const btnCopiarJson = document.getElementById('exp-copiar');
+    btnCopiarJson.addEventListener('click', async () => {
+      const ok = await executarCopia(btnCopiarJson, 'Copiar JSON', () => JSON.stringify(montarBackup(), null, 2));
+      if (ok) { marcarBackup(); atualizarResumo(); }
+    });
+
+    // importar
+    const $resumoImp = document.getElementById('imp-resumo');
+    let pendente = null;
+
+    function mostrarPendente(txt) {
+      try {
+        pendente = validarBackup(txt);
+      } catch (e) {
+        pendente = null;
+        $resumoImp.innerHTML = '<p class="erro-txt">' + esc(e.message) + '</p>';
+        return;
+      }
+      const p = pendente;
+      const quando = p.data && dataHora(p.data) ? ' de ' + esc(dataHora(p.data)) : '';
+      $resumoImp.innerHTML =
+        '<div class="resumo-import"><p><strong>Backup encontrado' + quando + '</strong><br>' +
+        p.proprias.length + ' condição(ões) própria(s), ' +
+        p.favoritos.length + ' favorito(s), ' + p.recentes.length + ' recente(s).</p>' +
+        '<p>Será <strong>mesclado</strong> ao que já existe aqui. Se a mesma condição já existir, ' +
+        'vale a do arquivo.</p>' +
+        '<button type="button" class="btn cheio" id="imp-confirmar">Confirmar importação</button></div>';
+      document.getElementById('imp-confirmar').addEventListener('click', () => {
+        if (pendente && aplicarImport(pendente)) {
+          pendente = null;
+          $resumoImp.innerHTML = '<p class="ok-txt">Importado ✓</p>';
+          atualizarResumo();
+        } else {
+          $resumoImp.innerHTML = '<p class="erro-txt">Não consegui gravar neste navegador.</p>';
+        }
+      });
+    }
+
+    const $arq = document.getElementById('imp-arquivo');
+    $arq.addEventListener('change', async () => {
+      const f = $arq.files && $arq.files[0];
+      if (!f) return;
+      try {
+        mostrarPendente(await lerArquivo(f));
+      } catch (e) {
+        $resumoImp.innerHTML = '<p class="erro-txt">Não consegui ler o arquivo.</p>';
+      }
+      $arq.value = '';
+    });
+
+    document.getElementById('imp-colado').addEventListener('click', () => {
+      const txt = document.getElementById('imp-texto').value.trim();
+      if (!txt) { $resumoImp.innerHTML = '<p class="erro-txt">Cole o conteúdo do backup primeiro.</p>'; return; }
+      mostrarPendente(txt);
+    });
+
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- erro ---------- */
+
+  function mostrarErro(e) {
+    $app.innerHTML =
+      '<div class="erro"><h2>Não consegui carregar o banco de condições</h2>' +
+      '<p><code>' + esc(e && e.message ? e.message : e) + '</code></p>' +
+      '<ul><li>Abra o app pelo endereço publicado (https://...), não pelo arquivo salvo no celular.</li>' +
+      '<li>Se você editou o <code>condicoes.json</code>, confira vírgulas, aspas e colchetes.</li></ul>' +
+      '<button class="btn" type="button" id="btn-recarregar">Tentar de novo</button></div>';
+    document.getElementById('btn-recarregar').addEventListener('click', () => location.reload());
+  }
+
+  /* ---------- rotas ---------- */
+
+  function decodificar(s) {
+    try { return decodeURIComponent(s); } catch (e) { return s; }
+  }
+
+  function rotear() {
+    if (!pronto) return;
+    const h = location.hash || '#/';
+    const mc = h.match(/^#\/c\/(.+)$/);
+    const me = h.match(/^#\/editar\/(.+)$/);
+    if (h === '#/backup') {
+      renderBackup();
+    } else if (h === '#/nova') {
+      renderForm(null);
+    } else if (me) {
+      renderForm(decodificar(me[1]));
+    } else if (mc) {
+      renderCondicao(decodificar(mc[1]));
+    } else {
+      renderLista();
+      window.scrollTo(0, scrollLista);
+      scrollLista = 0;
+    }
+  }
+
+  // chamado ao ir para uma tela "mais funda" (para o botão Voltar funcionar bem)
+  function aoNavegar() {
+    const h = location.hash || '#/';
+    if (h === '#/' || h === '#') scrollLista = window.scrollY;
+    abriuDaLista = true;
+  }
+
+  $app.addEventListener('click', (e) => {
+    const est = e.target.closest('.estrela');
+    if (est) {
+      e.preventDefault();
+      const id = est.dataset.id;
+      if (!alternarFavorito(id)) {
+        alert('Não consegui salvar o favorito neste navegador.');
+        return;
+      }
+      if (est.dataset.det) {
+        atualizarEstrela(est, id);
+      } else {
+        const y = window.scrollY;
+        renderLista();
+        window.scrollTo(0, y);
+      }
+      return;
+    }
+    if (e.target.closest('.voltar')) {
+      e.preventDefault();
+      if (abriuDaLista) { abriuDaLista = false; history.back(); }
+      else { location.hash = '#/'; }
+      return;
+    }
+    const a = e.target.closest('a[href^="#/"]');
+    if (a) {
+      if (a.classList.contains('btn-nova')) {
+        formInicial = a.dataset.nome ? { nome: a.dataset.nome } : null;
+      }
+      aoNavegar();
+    }
+  });
+
+  $btnBackup.addEventListener('click', () => {
+    if ((location.hash || '#/') === '#/backup') return;
+    aoNavegar();
+  });
+
+  /* ---------- busca na tela ---------- */
+
+  function aoDigitar() {
+    consulta = $busca.value;
+    $limpar.hidden = !consulta;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const h = location.hash || '#/';
+      if (h !== '#/' && h !== '#') {
+        history.replaceState(null, '', '#/');
+        abriuDaLista = false;
+      }
+      scrollLista = 0;
+      renderLista();
+      window.scrollTo(0, 0);
+    }, 90);
+  }
+
+  $busca.addEventListener('input', aoDigitar);
+  $busca.addEventListener('keydown', (e) => { if (e.key === 'Enter') $busca.blur(); });
+  $limpar.addEventListener('click', () => {
+    $busca.value = '';
+    $busca.focus();
+    aoDigitar();
+  });
+
+  $tema.addEventListener('click', () => {
+    const el = document.documentElement;
+    const atual = el.dataset.tema ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
+    const novo = atual === 'escuro' ? 'claro' : 'escuro';
+    el.dataset.tema = novo;
+    try { localStorage.setItem('rrp_tema', novo); } catch (e) {}
+  });
+
+  window.addEventListener('hashchange', rotear);
+
+  /* ---------- carga do banco ---------- */
+
+  async function buscarJSON(url) {
+    const r = await fetch(url, { cache: 'no-cache' });
+    if (!r.ok) throw new Error('Arquivo ' + url + ' não encontrado (HTTP ' + r.status + ').');
+    return r.json();
+  }
+
+  async function carregar() {
+    $app.innerHTML = '<p class="carregando">Carregando…</p>';
+    try {
+      const dados = await buscarJSON(URL_BANCO);
+      if (!dados || !Array.isArray(dados.condicoes)) {
+        throw new Error('Formato inválido: falta a lista "condicoes" no JSON.');
+      }
+      let todas = dados.condicoes.slice();
+
+      // lotes extras (opcional): data/lotes.json -> { "arquivos": ["lote-01.json", ...] }
+      falhasLotes = [];
+      let arquivos = [];
+      try {
+        const l = await buscarJSON(URL_LOTES);
+        if (l && Array.isArray(l.arquivos)) {
+          arquivos = l.arquivos.filter((x) => typeof x === 'string' && /^[A-Za-z0-9._-]+\.json$/.test(x));
+        }
+      } catch (e) {
+        if (!/não encontrado/.test(String(e && e.message))) falhasLotes.push('lotes.json');
+      }
+      for (const nome of arquivos) {
+        try {
+          const d = await buscarJSON('data/' + nome);
+          if (!d || !Array.isArray(d.condicoes)) throw new Error('formato inválido');
+          todas = todas.concat(d.condicoes);
+        } catch (e) {
+          falhasLotes.push(nome);
+        }
+      }
+
+      const vistos = new Set();
+      base = todas.filter((c) => {
+        if (!c || !c.id || !c.nome) { console.warn('Condição ignorada (sem id ou nome):', c); return false; }
+        if (vistos.has(c.id)) { console.warn('id repetido, ignorado:', c.id); return false; }
+        vistos.add(c.id);
+        return true;
+      });
+      reconstruir();
+      pronto = true;
+      rotear();
+    } catch (e) {
+      mostrarErro(e);
+    }
+  }
+
+  carregar();
+})();
