@@ -14,7 +14,10 @@ try { var t = localStorage.getItem('rrp_tema'); if (t) document.documentElement.
 <header class="topo">
   <div class="topo-linha">
     <h1 class="titulo">Receita Rápida <span>Plantão</span></h1>
-    <button id="btn-tema" class="btn-icone" type="button" aria-label="Alternar modo escuro">🌓</button>
+    <div class="topo-acoes">
+      <a id="btn-backup" class="btn-icone" href="#/backup" aria-label="Backup">💾</a>
+      <button id="btn-tema" class="btn-icone" type="button" aria-label="Alternar modo escuro">🌓</button>
+    </div>
   </div>
   <div class="busca">
     <input id="busca" type="text" inputmode="search" enterkeyhint="search"
