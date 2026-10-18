@@ -2,9 +2,16 @@
   'use strict';
 
   const URL_BANCO = 'data/condicoes.json';
+  const LS_VERSOES = 'rrp_versoes'; // suas versões salvas: { idDaCondicao: { campo: { t: texto, b: original } } }
   // [campo do índice, peso na pontuação]
   const CAMPOS = [['nome', 5], ['cid', 5], ['sin', 4], ['sint', 2], ['tags', 1]];
   const ROTULO = { sin: 'sinônimo', sint: 'sintoma', tags: 'tag' };
+  const BLOCOS = [
+    { campo: 'receita', titulo: 'Receita', extra: '' },
+    { campo: 'orientacoes', titulo: 'Orientações', extra: '' },
+    { campo: 'sinais_alarme', titulo: 'Sinais de alarme', extra: 'alarme' },
+  ];
+  const TEM_COLCHETES = /\[[^\]]*\]/;
 
   const $app = document.getElementById('app');
   const $busca = document.getElementById('busca');
@@ -18,6 +25,36 @@
   let scrollLista = 0;
   let abriuDaLista = false;
   let timer = null;
+  let estado = {}; // estado dos 3 blocos da condição aberta
+
+  /* ---------- armazenamento no aparelho ---------- */
+
+  function lerLS(chave, padrao) {
+    try {
+      const v = localStorage.getItem(chave);
+      return v ? JSON.parse(v) : padrao;
+    } catch (e) { return padrao; }
+  }
+
+  function gravarLS(chave, valor) {
+    try { localStorage.setItem(chave, JSON.stringify(valor)); return true; }
+    catch (e) { return false; }
+  }
+
+  let versoes = lerLS(LS_VERSOES, {});
+  if (!versoes || typeof versoes !== 'object' || Array.isArray(versoes)) versoes = {};
+
+  // salva (ou apaga, se o texto for igual ao original) a sua versão de um bloco
+  function gravarVersao(id, campo, valor, orig) {
+    const copia = JSON.parse(JSON.stringify(versoes));
+    if (!copia[id] || typeof copia[id] !== 'object') copia[id] = {};
+    if (valor === orig) delete copia[id][campo];
+    else copia[id][campo] = { t: valor, b: orig };
+    if (!Object.keys(copia[id]).length) delete copia[id];
+    if (!gravarLS(LS_VERSOES, copia)) return false;
+    versoes = copia;
+    return true;
+  }
 
   /* ---------- utilidades ---------- */
 
@@ -70,7 +107,6 @@
     };
   }
 
-  // t = trecho digitado, w = palavra do banco (ambos normalizados)
   function casar(t, w) {
     if (w === t) return 3;
     if (w.startsWith(t)) return 2.5;
@@ -80,10 +116,10 @@
 
   function aproximar(t, w) {
     const n = t.length;
-    if (n < 4 || /\d/.test(t)) return 0; // sem tolerância para curtos e para códigos CID
+    if (n < 4 || /\d/.test(t)) return 0;
     const max = n >= 8 ? 2 : 1;
     if (Math.abs(w.length - n) <= max && lev(t, w) <= max) return 1;
-    if (w.length > n && lev(t, w.slice(0, n)) <= max) return 0.8; // erro no meio da digitação
+    if (w.length > n && lev(t, w.slice(0, n)) <= max) return 0.8;
     return 0;
   }
 
@@ -122,6 +158,80 @@
     return res;
   }
 
+  /* ---------- copiar ---------- */
+
+  async function copiarTexto(t) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try { await navigator.clipboard.writeText(t); return true; } catch (e) { /* plano B abaixo */ }
+    }
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = t;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;font-size:16px;';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, t.length);
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  function piscar(btn, msg, rotulo, classe, ms) {
+    btn.textContent = msg;
+    btn.classList.add(classe);
+    clearTimeout(btn._t);
+    btn._t = setTimeout(() => {
+      btn.textContent = rotulo;
+      btn.classList.remove(classe);
+    }, ms || 1600);
+  }
+
+  async function executarCopia(btn, rotulo, obterTexto, aoFalhar) {
+    const txt = obterTexto();
+    if (!txt.trim()) { piscar(btn, 'Texto vazio', rotulo, 'erro'); return; }
+    const ok = await copiarTexto(txt);
+    if (ok) {
+      piscar(btn, 'Copiado ✓', rotulo, 'ok');
+      try { if (navigator.vibrate) navigator.vibrate(25); } catch (e) {}
+    } else {
+      piscar(btn, 'Não copiou. Copie manualmente', rotulo, 'erro', 3500);
+      if (aoFalhar) aoFalhar();
+    }
+  }
+
+  // botão com confirmação em 2 toques quando "precisa()" for verdadeiro
+  function ligarBotao(btn, { rotulo, aviso, precisa, acao }) {
+    let armado = false;
+    let t = null;
+    const desarmar = () => {
+      armado = false;
+      clearTimeout(t);
+      btn.classList.remove('armado');
+      btn.textContent = rotulo;
+    };
+    btn.addEventListener('click', () => {
+      if (!armado && precisa()) {
+        armado = true;
+        btn.classList.add('armado');
+        btn.textContent = aviso;
+        t = setTimeout(desarmar, 5000);
+        return;
+      }
+      desarmar();
+      acao(btn, rotulo);
+    });
+  }
+
+  function montarTudo() {
+    return BLOCOS
+      .map((b) => ({ t: b.titulo.toUpperCase(), v: estado[b.campo].ta.value.trim() }))
+      .filter((x) => x.v)
+      .map((x) => x.t + '\n' + x.v)
+      .join('\n\n');
+  }
+
   /* ---------- telas ---------- */
 
   function renderLista() {
@@ -152,11 +262,115 @@
       '<ul class="lista">' + itens + '</ul>';
   }
 
-  function bloco(titulo, valor, extra) {
+  const ajustar = (ta) => {
+    ta.style.height = 'auto';
+    ta.style.height = (ta.scrollHeight + 2) + 'px';
+  };
+
+  function blocoHTML(b) {
     return (
-      '<section class="bloco ' + (extra || '') + '"><h3>' + esc(titulo) + '</h3>' +
-      '<pre class="texto">' + esc(texto(valor)) + '</pre></section>'
+      '<section class="bloco ' + b.extra + '" data-campo="' + b.campo + '">' +
+      '<div class="bloco-topo"><h3>' + esc(b.titulo) + '</h3><span class="selo" data-selo hidden></span></div>' +
+      '<textarea class="campo" data-ta spellcheck="false" autocapitalize="off" autocorrect="off" ' +
+      'aria-label="' + esc(b.titulo) + '"></textarea>' +
+      '<button type="button" class="btn btn-copiar" data-copiar>Copiar ' + esc(b.titulo.toLowerCase()) + '</button>' +
+      '<div class="edicao" data-edicao>' +
+      '<button type="button" class="btn-sec" data-temp>Usar só desta vez</button>' +
+      '<button type="button" class="btn-sec principal" data-salvar>Salvar como minha versão</button>' +
+      '<button type="button" class="btn-sec principal" data-manter>Manter minha versão</button>' +
+      '<button type="button" class="btn-sec" data-restaurar>Restaurar original</button>' +
+      '</div></section>'
     );
+  }
+
+  function montarBloco(c, b) {
+    const sec = $app.querySelector('[data-campo="' + b.campo + '"]');
+    const ta = sec.querySelector('[data-ta]');
+    const selo = sec.querySelector('[data-selo]');
+    const edicao = sec.querySelector('[data-edicao]');
+    const btnTemp = sec.querySelector('[data-temp]');
+    const btnSalvar = sec.querySelector('[data-salvar]');
+    const btnManter = sec.querySelector('[data-manter]');
+    const btnRest = sec.querySelector('[data-restaurar]');
+    const btnCopiar = sec.querySelector('[data-copiar]');
+
+    const orig = texto(c[b.campo]);
+    const reg = (versoes[c.id] || {})[b.campo];
+    const valido = !!reg && typeof reg.t === 'string';
+    const e = (estado[b.campo] = {
+      orig,
+      salvo: valido ? reg.t : null,
+      base: valido ? reg.b : null,
+      temp: false,
+      ta,
+    });
+    ta.value = e.salvo !== null ? e.salvo : orig;
+
+    function atualizar() {
+      const baseAtual = e.salvo !== null ? e.salvo : e.orig;
+      const sujo = ta.value !== baseAtual;
+      const desatualizado = e.salvo !== null && e.base !== e.orig;
+      let msg = '';
+      if (sujo) msg = e.temp ? 'Edição só desta vez (não salva)' : 'Editado, ainda não salvo';
+      else if (e.salvo !== null) msg = 'Sua versão salva';
+      if (desatualizado) msg += (msg ? ' · ' : '') + '⚠ o texto original foi atualizado';
+      selo.textContent = msg;
+      selo.hidden = !msg;
+      selo.className = 'selo' + (sujo || desatualizado ? ' aviso' : '');
+      btnTemp.hidden = btnSalvar.hidden = !(sujo && !e.temp);
+      btnManter.hidden = !(desatualizado && !sujo);
+      btnRest.hidden = !(e.salvo !== null || ta.value !== e.orig);
+      edicao.hidden = btnTemp.hidden && btnSalvar.hidden && btnManter.hidden && btnRest.hidden;
+    }
+
+    function salvar(valor) {
+      if (!gravarVersao(c.id, b.campo, valor, e.orig)) {
+        alert('Não consegui salvar neste navegador (modo anônimo ou armazenamento bloqueado).');
+        return;
+      }
+      e.salvo = valor === e.orig ? null : valor;
+      e.base = e.salvo === null ? null : e.orig;
+      e.temp = false;
+      atualizar();
+    }
+
+    ta.addEventListener('input', () => {
+      e.temp = false;
+      ajustar(ta);
+      atualizar();
+    });
+    btnTemp.addEventListener('click', () => { e.temp = true; atualizar(); });
+    btnSalvar.addEventListener('click', () => salvar(ta.value));
+    btnManter.addEventListener('click', () => salvar(e.salvo));
+
+    ligarBotao(btnRest, {
+      rotulo: 'Restaurar original',
+      aviso: 'Toque de novo para restaurar',
+      precisa: () => true,
+      acao: () => {
+        if (e.salvo !== null && !gravarVersao(c.id, b.campo, e.orig, e.orig)) {
+          alert('Não consegui apagar a sua versão salva neste navegador.');
+          return;
+        }
+        e.salvo = null;
+        e.base = null;
+        e.temp = false;
+        ta.value = e.orig;
+        ajustar(ta);
+        atualizar();
+      },
+    });
+
+    ligarBotao(btnCopiar, {
+      rotulo: 'Copiar ' + b.titulo.toLowerCase(),
+      aviso: 'Tem [campos]. Copiar mesmo assim?',
+      precisa: () => TEM_COLCHETES.test(ta.value),
+      acao: (btn, rotulo) =>
+        executarCopia(btn, rotulo, () => ta.value.trim(), () => { ta.focus(); ta.select(); }),
+    });
+
+    ajustar(ta);
+    atualizar();
   }
 
   function renderCondicao(id) {
@@ -167,6 +381,7 @@
         '<div class="vazio"><p>Condição não encontrada.</p></div>';
       return;
     }
+    estado = {};
     const tags = (c.tags || []).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
     $app.innerHTML =
       '<a class="voltar" href="#/">← Voltar</a>' +
@@ -177,11 +392,21 @@
       (c.nota_revisao
         ? '<details class="nota"><summary>Nota para revisão</summary><p>' + esc(texto(c.nota_revisao)) + '</p></details>'
         : '') +
-      bloco('Receita', c.receita) +
-      bloco('Orientações', c.orientacoes) +
-      bloco('Sinais de alarme', c.sinais_alarme, 'alarme') +
-      '</article>';
+      BLOCOS.map((b) => blocoHTML(b)).join('') +
+      '</article>' +
+      '<div class="barra-copiar"><button type="button" class="btn cheio" id="btn-tudo">Copiar tudo</button></div>';
+
+    BLOCOS.forEach((b) => montarBloco(c, b));
+
+    ligarBotao(document.getElementById('btn-tudo'), {
+      rotulo: 'Copiar tudo',
+      aviso: 'Tem [campos]. Copiar tudo mesmo assim?',
+      precisa: () => TEM_COLCHETES.test(montarTudo()),
+      acao: (btn, rotulo) => executarCopia(btn, rotulo, montarTudo),
+    });
+
     window.scrollTo(0, 0);
+    requestAnimationFrame(() => BLOCOS.forEach((b) => ajustar(estado[b.campo].ta)));
   }
 
   function mostrarErro(e) {
