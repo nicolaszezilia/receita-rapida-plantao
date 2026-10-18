@@ -32,6 +32,23 @@ try { var t = localStorage.getItem('rrp_tema'); if (t) document.documentElement.
 
 <footer class="rodape">Conteúdo de apoio. Revise antes de prescrever.</footer>
 
-<script src="app.js"></script>
+<script>
+(function () {
+  function mostrar(msg) {
+    var el = document.getElementById('app');
+    if (!el || el.innerHTML.replace(/\s/g, '') !== '') return;
+    el.innerHTML =
+      '<div class="erro"><h2>O programa não iniciou</h2>' +
+      '<p><code>' + String(msg).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</code></p>' +
+      '<ul><li>Confira se o arquivo <b>app.js</b> está na raiz do repositório e completo ' +
+      '(termina com <code>carregar();</code> e <code>})();</code>).</li>' +
+      '<li>Confira também o final do <b>style.css</b>.</li></ul></div>';
+  }
+  window.__rrpMostrar = mostrar;
+  window.addEventListener('error', function (e) { mostrar(e.message || 'erro desconhecido'); });
+  window.setTimeout(function () { mostrar('Nada foi exibido após alguns segundos.'); }, 3000);
+})();
+</script>
+<script src="app.js" onerror="__rrpMostrar('Não encontrei o arquivo app.js.')"></script>
 </body>
 </html>
