@@ -276,4 +276,184 @@ a.btn-sec {
 .btn-sec.ok { color: #fff; background: #1f9d55; border-color: #1f9d55; }
 .btn-sec.erro { color: #fff; background: #b42318; border-color: #b42318; }
 
-.acoes-col
+.acoes-col { display: flex; flex-direction: column; gap: 10px; }
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 4px;
+  color: var(--primaria);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.titulo-cond { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.cond h2 { margin: 4px 0 6px; font-size: 1.35rem; }
+.titulo-cond .estrela { flex: 0 0 52px; min-height: 52px; height: 52px; }
+
+.meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--suave); font-size: 0.9rem; margin-bottom: 12px; }
+
+.aviso-rev {
+  background: var(--aviso-bg);
+  color: var(--aviso-txt);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin: 0 0 12px;
+}
+
+.nota {
+  background: var(--card);
+  border: 1px dashed var(--borda);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.nota summary { font-weight: 600; min-height: 32px; }
+.nota p { margin: 8px 0 0; color: var(--suave); }
+
+/* blocos editáveis */
+.bloco {
+  background: var(--card);
+  border: 1px solid var(--borda);
+  border-left: 5px solid var(--primaria);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.bloco.alarme { border-left-color: var(--alerta-borda); background: var(--alerta-bg); }
+
+.bloco-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.bloco h3 {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--suave);
+}
+
+.selo {
+  background: var(--tag-bg);
+  color: var(--tag-txt);
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.selo.aviso { background: var(--aviso-bg); color: var(--aviso-txt); }
+
+.campo {
+  display: block;
+  width: 100%;
+  min-height: 110px;
+  padding: 12px;
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--texto);
+  background: var(--bg);
+  border: 1.5px solid var(--borda);
+  border-radius: 12px;
+  resize: none;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.campo:focus { outline: none; border-color: var(--primaria); }
+
+.btn-copiar { width: 100%; margin-top: 10px; }
+
+.edicao { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* formulário de condição */
+.grupo { margin-bottom: 16px; }
+
+.rotulo {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.entrada {
+  display: block;
+  width: 100%;
+  height: 52px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--texto);
+  background: var(--card);
+  border: 1.5px solid var(--borda);
+  border-radius: 12px;
+}
+
+.entrada:focus { outline: none; border-color: var(--primaria); }
+
+.grupo .campo { background: var(--card); }
+.campo.curto { min-height: 76px; }
+
+.dica { margin: 6px 2px 0; color: var(--suave); font-size: 0.8rem; }
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  font-size: 1rem;
+}
+
+.check input { width: 26px; height: 26px; flex: 0 0 26px; accent-color: var(--primaria); }
+
+/* backup */
+.bloco input[type="file"] {
+  width: 100%;
+  padding: 10px 0;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--texto);
+}
+
+.resumo-import {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+
+.resumo-import p { margin: 0 0 10px; }
+
+/* barra fixa embaixo */
+.barra-copiar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin: 0 -12px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  border-top: 1px solid var(--borda);
+}
+
+.barra-dupla { display: flex; gap: 10px; }
+.barra-dupla .btn { flex: 2; min-height: 56px; }
+.barra-dupla .btn-sec { flex: 1; min-height: 56px; }
+
+.rodape {
+  text-align: center;
+  color: var(--suave);
+  font-size: 0.78rem;
+  padding: 18px 12px calc(24px + env(safe-area-inset-bottom));
+}
