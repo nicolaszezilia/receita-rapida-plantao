@@ -2,6 +2,7 @@
   'use strict';
 
   const URL_BANCO = 'data/condicoes.json';
+  const URL_LOTES = 'data/lotes.json'; // { "arquivos": ["lote-01.json", ...] }
   const LS_VERSOES = 'rrp_versoes'; // { idDaCondicao: { campo: { t: texto, b: original } } }
   const LS_PROPRIAS = 'rrp_proprias'; // condições criadas por você
   const LS_FAV = 'rrp_favoritos'; // [ids]
@@ -16,9 +17,10 @@
   const CAMPOS = [['nome', 5], ['cid', 5], ['sin', 4], ['sint', 2], ['tags', 1]];
   const ROTULO = { sin: 'sinônimo', sint: 'sintoma', tags: 'tag' };
   const BLOCOS = [
-    { campo: 'receita', titulo: 'Receita', extra: '' },
-    { campo: 'orientacoes', titulo: 'Orientações', extra: '' },
-    { campo: 'sinais_alarme', titulo: 'Sinais de alarme', extra: 'alarme' },
+    { campo: 'prescricao_ps', titulo: 'Prescrição no PS / hospitalar', copiar: 'Copiar prescrição no PS', extra: '', opcional: true, naTudo: false },
+    { campo: 'receita', titulo: 'Receita', copiar: 'Copiar receita', extra: '', opcional: false, naTudo: true },
+    { campo: 'orientacoes', titulo: 'Orientações', copiar: 'Copiar orientações', extra: '', opcional: false, naTudo: true },
+    { campo: 'sinais_alarme', titulo: 'Sinais de alarme', copiar: 'Copiar sinais de alarme', extra: 'alarme', opcional: false, naTudo: true },
   ];
   const CAMPOS_TEXTO = BLOCOS.map((b) => b.campo);
   const TEM_COLCHETES = /\[[^\]]*\]/;
@@ -29,7 +31,7 @@
   const $tema = document.getElementById('btn-tema');
   const $btnBackup = document.getElementById('btn-backup');
 
-  let base = []; // condições do arquivo condicoes.json
+  let base = []; // condições dos arquivos de dados
   let condicoes = []; // base + suas condições
   let indice = [];
   let pronto = false;
@@ -37,8 +39,9 @@
   let scrollLista = 0;
   let abriuDaLista = false;
   let timer = null;
-  let estado = {}; // estado dos 3 blocos da condição aberta
+  let estado = {}; // estado dos blocos da condição aberta
   let formInicial = null; // dados para pré-preencher o formulário (duplicar / nome sugerido)
+  let falhasLotes = []; // lotes que não carregaram
 
   /* ---------- armazenamento no aparelho ---------- */
 
@@ -73,6 +76,7 @@
       tags: l(o.tags),
       sinonimos: l(o.sinonimos),
       sintomas: l(o.sintomas),
+      prescricao_ps: s(o.prescricao_ps),
       receita: s(o.receita),
       orientacoes: s(o.orientacoes),
       sinais_alarme: s(o.sinais_alarme),
@@ -339,8 +343,10 @@
     });
   }
 
+  // "Copiar tudo": receita + orientações + sinais de alarme (sem a prescrição no PS)
   function montarTudo() {
     return BLOCOS
+      .filter((b) => b.naTudo && estado[b.campo])
       .map((b) => ({ t: b.titulo.toUpperCase(), v: estado[b.campo].ta.value.trim() }))
       .filter((x) => x.v)
       .map((x) => x.t + '\n' + x.v)
@@ -392,17 +398,23 @@
     return '<a class="faixa" href="#/backup">💾 Você tem dados seus sem backup (textos editados ou condições criadas). Toque para fazer o backup.</a>';
   }
 
+  function faixaLotes() {
+    if (!falhasLotes.length) return '';
+    return '<p class="aviso-rev">⚠ Não consegui carregar: ' + esc(falhasLotes.join(', ')) +
+      '. Confira os nomes em data/lotes.json e os arquivos na pasta data.</p>';
+  }
+
   function renderHome() {
     const todas = buscar('');
     const botaoNova = '<a class="btn-sec cheio" href="#/nova" style="margin-bottom:6px">＋ Adicionar condição</a>';
     if (!todas.length) {
-      $app.innerHTML = botaoNova + '<div class="vazio"><p>Nenhuma condição no banco ainda.</p></div>';
+      $app.innerHTML = faixaLotes() + botaoNova + '<div class="vazio"><p>Nenhuma condição no banco ainda.</p></div>';
       return;
     }
     const porId = new Map(condicoes.map((c) => [c.id, c]));
     const favs = favoritos.map((id) => porId.get(id)).filter(Boolean);
     const recs = recentes.map((id) => porId.get(id)).filter(Boolean).slice(0, MOSTRAR_RECENTES);
-    let html = faixaBackup() + botaoNova;
+    let html = faixaLotes() + faixaBackup() + botaoNova;
     if (favs.length) {
       html += '<h2 class="secao">★ Favoritos</h2><ul class="lista">' +
         favs.map((c) => itemHTML(c, null, true)).join('') + '</ul>';
@@ -445,7 +457,7 @@
       '<div class="bloco-topo"><h3>' + esc(b.titulo) + '</h3><span class="selo" data-selo hidden></span></div>' +
       '<textarea class="campo" data-ta spellcheck="false" autocapitalize="off" autocorrect="off" ' +
       'aria-label="' + esc(b.titulo) + '"></textarea>' +
-      '<button type="button" class="btn btn-copiar" data-copiar>Copiar ' + esc(b.titulo.toLowerCase()) + '</button>' +
+      '<button type="button" class="btn btn-copiar" data-copiar>' + esc(b.copiar) + '</button>' +
       '<div class="edicao" data-edicao>' +
       '<button type="button" class="btn-sec" data-temp>Usar só desta vez</button>' +
       '<button type="button" class="btn-sec principal" data-salvar>Salvar como minha versão</button>' +
@@ -551,7 +563,7 @@
     });
 
     ligarBotao(btnCopiar, {
-      rotulo: 'Copiar ' + b.titulo.toLowerCase(),
+      rotulo: b.copiar,
       aviso: 'Tem [campos]. Copiar mesmo assim?',
       precisa: () => TEM_COLCHETES.test(ta.value),
       acao: (btn, rotulo) =>
@@ -572,6 +584,8 @@
     }
     registrarRecente(c.id);
     estado = {};
+    // o bloco "prescrição no PS" só aparece nas condições que têm esse texto
+    const blocosC = BLOCOS.filter((b) => !b.opcional || texto(c[b.campo]).trim() !== '');
     const tags =
       (c.propria ? '<span class="tag minha">Minha condição</span>' : '') +
       (c.tags || []).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
@@ -584,7 +598,7 @@
       (c.nota_revisao
         ? '<details class="nota"><summary>Nota para revisão</summary><p>' + esc(texto(c.nota_revisao)) + '</p></details>'
         : '') +
-      BLOCOS.map((b) => blocoHTML(b)).join('') +
+      blocosC.map((b) => blocoHTML(b)).join('') +
       '<div class="acoes-col" style="margin-top:6px">' +
       (c.propria
         ? '<a class="btn-sec cheio" href="#/editar/' + encodeURIComponent(c.id) + '">Editar cadastro (nome, CID, busca)</a>'
@@ -597,7 +611,7 @@
       '</article>' +
       '<div class="barra-copiar"><button type="button" class="btn cheio" id="btn-tudo">Copiar tudo</button></div>';
 
-    BLOCOS.forEach((b) => montarBloco(c, b));
+    blocosC.forEach((b) => montarBloco(c, b));
 
     ligarBotao(document.getElementById('btn-tudo'), {
       rotulo: 'Copiar tudo',
@@ -607,15 +621,17 @@
     });
 
     document.getElementById('btn-duplicar').addEventListener('click', () => {
+      const val = (campo) => (estado[campo] ? estado[campo].ta.value : '');
       formInicial = {
         nome: c.nome + ' (cópia)',
         cid: c.cid || '',
         tags: c.tags || [],
         sinonimos: c.sinonimos || [],
         sintomas: c.sintomas || [],
-        receita: estado.receita.ta.value,
-        orientacoes: estado.orientacoes.ta.value,
-        sinais_alarme: estado.sinais_alarme.ta.value,
+        prescricao_ps: val('prescricao_ps'),
+        receita: val('receita'),
+        orientacoes: val('orientacoes'),
+        sinais_alarme: val('sinais_alarme'),
         revisado: c.revisado === true,
       };
       aoNavegar();
@@ -632,7 +648,7 @@
     }
 
     window.scrollTo(0, 0);
-    requestAnimationFrame(() => BLOCOS.forEach((b) => ajustar(estado[b.campo].ta)));
+    requestAnimationFrame(() => Object.keys(estado).forEach((k) => ajustar(estado[k].ta)));
   }
 
   /* ---------- formulário: nova condição / editar cadastro ---------- */
@@ -677,6 +693,7 @@
       entrada('f-tags', 'Tags', 'Separe por vírgula. Ex.: Respiratório, Pediatria', 'autocapitalize="sentences"') +
       area('f-sin', 'Sinônimos', 'Um por linha (ou separados por vírgula). Ex.: amigdalite, dor de garganta', true) +
       area('f-sint', 'Sintomas associados', 'Um por linha (ou separados por vírgula). Ex.: febre, odinofagia', true) +
+      area('f-ps', 'Prescrição no PS / hospitalar (opcional)', 'Só aparece na condição se tiver texto. Não entra no «Copiar tudo».') +
       area('f-receita', 'Receita', 'Use [colchetes] para o que precisa ser preenchido ou apagado antes de copiar. Ex.: [peso] kg') +
       area('f-orient', 'Orientações ao paciente', '') +
       area('f-alarme', 'Sinais de alarme', '') +
@@ -695,12 +712,13 @@
     $('f-tags').value = (ini.tags || []).join(', ');
     $('f-sin').value = (ini.sinonimos || []).join('\n');
     $('f-sint').value = (ini.sintomas || []).join('\n');
+    $('f-ps').value = texto(ini.prescricao_ps);
     $('f-receita').value = texto(ini.receita);
     $('f-orient').value = texto(ini.orientacoes);
     $('f-alarme').value = texto(ini.sinais_alarme);
     $('f-rev').checked = editando ? editando.revisado === true : ini.revisado !== false;
 
-    const areas = ['f-sin', 'f-sint', 'f-receita', 'f-orient', 'f-alarme'];
+    const areas = ['f-sin', 'f-sint', 'f-ps', 'f-receita', 'f-orient', 'f-alarme'];
     areas.forEach((k) => {
       const ta = $(k);
       ta.addEventListener('input', () => ajustar(ta));
@@ -729,6 +747,7 @@
         tags: listar($('f-tags').value),
         sinonimos: listar($('f-sin').value),
         sintomas: listar($('f-sint').value),
+        prescricao_ps: $('f-ps').value.trim(),
         receita: $('f-receita').value.trim(),
         orientacoes: $('f-orient').value.trim(),
         sinais_alarme: $('f-alarme').value.trim(),
@@ -1135,17 +1154,44 @@
 
   /* ---------- carga do banco ---------- */
 
+  async function buscarJSON(url) {
+    const r = await fetch(url, { cache: 'no-cache' });
+    if (!r.ok) throw new Error('Arquivo ' + url + ' não encontrado (HTTP ' + r.status + ').');
+    return r.json();
+  }
+
   async function carregar() {
     $app.innerHTML = '<p class="carregando">Carregando…</p>';
     try {
-      const r = await fetch(URL_BANCO, { cache: 'no-cache' });
-      if (!r.ok) throw new Error('Arquivo ' + URL_BANCO + ' não encontrado (HTTP ' + r.status + ').');
-      const dados = await r.json();
+      const dados = await buscarJSON(URL_BANCO);
       if (!dados || !Array.isArray(dados.condicoes)) {
         throw new Error('Formato inválido: falta a lista "condicoes" no JSON.');
       }
+      let todas = dados.condicoes.slice();
+
+      // lotes extras (opcional): data/lotes.json -> { "arquivos": ["lote-01.json", ...] }
+      falhasLotes = [];
+      let arquivos = [];
+      try {
+        const l = await buscarJSON(URL_LOTES);
+        if (l && Array.isArray(l.arquivos)) {
+          arquivos = l.arquivos.filter((x) => typeof x === 'string' && /^[A-Za-z0-9._-]+\.json$/.test(x));
+        }
+      } catch (e) {
+        if (!/não encontrado/.test(String(e && e.message))) falhasLotes.push('lotes.json');
+      }
+      for (const nome of arquivos) {
+        try {
+          const d = await buscarJSON('data/' + nome);
+          if (!d || !Array.isArray(d.condicoes)) throw new Error('formato inválido');
+          todas = todas.concat(d.condicoes);
+        } catch (e) {
+          falhasLotes.push(nome);
+        }
+      }
+
       const vistos = new Set();
-      base = dados.condicoes.filter((c) => {
+      base = todas.filter((c) => {
         if (!c || !c.id || !c.nome) { console.warn('Condição ignorada (sem id ou nome):', c); return false; }
         if (vistos.has(c.id)) { console.warn('id repetido, ignorado:', c.id); return false; }
         vistos.add(c.id);
