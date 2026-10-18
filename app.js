@@ -703,3 +703,169 @@
         p.nVers + ' texto(s) editado(s), ' + p.favoritos.length + ' favorito(s), ' +
         p.recentes.length + ' recente(s).</p>' +
         '<p>Será <strong>mesclado</strong> ao que já existe aqui. Se o mesmo bloco já tiver uma versão sua, ' +
+        'vale a do arquivo.</p>' +
+        '<button type="button" class="btn cheio" id="imp-confirmar">Confirmar importação</button></div>';
+      document.getElementById('imp-confirmar').addEventListener('click', () => {
+        if (pendente && aplicarImport(pendente)) {
+          pendente = null;
+          $resumoImp.innerHTML = '<p class="ok-txt">Importado ✓</p>';
+          atualizarResumo();
+        } else {
+          $resumoImp.innerHTML = '<p class="erro-txt">Não consegui gravar neste navegador.</p>';
+        }
+      });
+    }
+
+    const $arq = document.getElementById('imp-arquivo');
+    $arq.addEventListener('change', async () => {
+      const f = $arq.files && $arq.files[0];
+      if (!f) return;
+      try {
+        mostrarPendente(await lerArquivo(f));
+      } catch (e) {
+        $resumoImp.innerHTML = '<p class="erro-txt">Não consegui ler o arquivo.</p>';
+      }
+      $arq.value = '';
+    });
+
+    document.getElementById('imp-colado').addEventListener('click', () => {
+      const txt = document.getElementById('imp-texto').value.trim();
+      if (!txt) { $resumoImp.innerHTML = '<p class="erro-txt">Cole o conteúdo do backup primeiro.</p>'; return; }
+      mostrarPendente(txt);
+    });
+
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- erro ---------- */
+
+  function mostrarErro(e) {
+    $app.innerHTML =
+      '<div class="erro"><h2>Não consegui carregar o banco de condições</h2>' +
+      '<p><code>' + esc(e && e.message ? e.message : e) + '</code></p>' +
+      '<ul><li>Abra o app pelo endereço publicado (https://...), não pelo arquivo salvo no celular.</li>' +
+      '<li>Se você editou o <code>condicoes.json</code>, confira vírgulas, aspas e colchetes.</li></ul>' +
+      '<button class="btn" type="button" id="btn-recarregar">Tentar de novo</button></div>';
+    document.getElementById('btn-recarregar').addEventListener('click', () => location.reload());
+  }
+
+  /* ---------- rotas ---------- */
+
+  function rotear() {
+    if (!pronto) return;
+    const h = location.hash || '#/';
+    const m = h.match(/^#\/c\/(.+)$/);
+    if (h === '#/backup') {
+      renderBackup();
+    } else if (m) {
+      let id = m[1];
+      try { id = decodeURIComponent(id); } catch (e) {}
+      renderCondicao(id);
+    } else {
+      renderLista();
+      window.scrollTo(0, scrollLista);
+      scrollLista = 0;
+    }
+  }
+
+  $app.addEventListener('click', (e) => {
+    const est = e.target.closest('.estrela');
+    if (est) {
+      e.preventDefault();
+      const id = est.dataset.id;
+      if (!alternarFavorito(id)) {
+        alert('Não consegui salvar o favorito neste navegador.');
+        return;
+      }
+      if (est.dataset.det) {
+        atualizarEstrela(est, id);
+      } else {
+        const y = window.scrollY;
+        renderLista();
+        window.scrollTo(0, y);
+      }
+      return;
+    }
+    if (e.target.closest('a.item') || e.target.closest('a.faixa')) {
+      scrollLista = window.scrollY;
+      abriuDaLista = true;
+      return;
+    }
+    if (e.target.closest('.voltar')) {
+      e.preventDefault();
+      if (abriuDaLista) { abriuDaLista = false; history.back(); }
+      else { location.hash = '#/'; }
+    }
+  });
+
+  $btnBackup.addEventListener('click', () => {
+    if ((location.hash || '#/') === '#/backup') return;
+    scrollLista = window.scrollY;
+    abriuDaLista = true;
+  });
+
+  /* ---------- busca na tela ---------- */
+
+  function aoDigitar() {
+    consulta = $busca.value;
+    $limpar.hidden = !consulta;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const h = location.hash || '#/';
+      if (h !== '#/' && h !== '#') {
+        history.replaceState(null, '', '#/');
+        abriuDaLista = false;
+      }
+      scrollLista = 0;
+      renderLista();
+      window.scrollTo(0, 0);
+    }, 90);
+  }
+
+  $busca.addEventListener('input', aoDigitar);
+  $busca.addEventListener('keydown', (e) => { if (e.key === 'Enter') $busca.blur(); });
+  $limpar.addEventListener('click', () => {
+    $busca.value = '';
+    $busca.focus();
+    aoDigitar();
+  });
+
+  $tema.addEventListener('click', () => {
+    const el = document.documentElement;
+    const atual = el.dataset.tema ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
+    const novo = atual === 'escuro' ? 'claro' : 'escuro';
+    el.dataset.tema = novo;
+    try { localStorage.setItem('rrp_tema', novo); } catch (e) {}
+  });
+
+  window.addEventListener('hashchange', rotear);
+
+  /* ---------- carga do banco ---------- */
+
+  async function carregar() {
+    $app.innerHTML = '<p class="carregando">Carregando…</p>';
+    try {
+      const r = await fetch(URL_BANCO, { cache: 'no-cache' });
+      if (!r.ok) throw new Error('Arquivo ' + URL_BANCO + ' não encontrado (HTTP ' + r.status + ').');
+      const dados = await r.json();
+      if (!dados || !Array.isArray(dados.condicoes)) {
+        throw new Error('Formato inválido: falta a lista "condicoes" no JSON.');
+      }
+      const vistos = new Set();
+      condicoes = dados.condicoes.filter((c) => {
+        if (!c || !c.id || !c.nome) { console.warn('Condição ignorada (sem id ou nome):', c); return false; }
+        if (vistos.has(c.id)) { console.warn('id repetido, ignorado:', c.id); return false; }
+        vistos.add(c.id);
+        return true;
+      });
+      indice = condicoes.map(construirIndice);
+      pronto = true;
+      rotear();
+    } catch (e) {
+      mostrarErro(e);
+    }
+  }
+
+  carregar();
+})();
