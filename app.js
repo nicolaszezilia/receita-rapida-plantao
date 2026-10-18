@@ -3,10 +3,11 @@
 
   const URL_BANCO = 'data/condicoes.json';
   const LS_VERSOES = 'rrp_versoes'; // { idDaCondicao: { campo: { t: texto, b: original } } }
+  const LS_PROPRIAS = 'rrp_proprias'; // condições criadas por você
   const LS_FAV = 'rrp_favoritos'; // [ids]
   const LS_REC = 'rrp_recentes'; // [ids]
   const LS_BACKUP = 'rrp_ultimo_backup'; // data ISO do último backup
-  const LS_ALTERADO = 'rrp_alterado'; // data ISO da última mudança nos textos salvos
+  const LS_ALTERADO = 'rrp_alterado'; // data ISO da última mudança nos seus dados
   const MAX_RECENTES = 10;
   const MOSTRAR_RECENTES = 5;
   const NOME_APP = 'receita-rapida-plantao';
@@ -28,7 +29,8 @@
   const $tema = document.getElementById('btn-tema');
   const $btnBackup = document.getElementById('btn-backup');
 
-  let condicoes = [];
+  let base = []; // condições do arquivo condicoes.json
+  let condicoes = []; // base + suas condições
   let indice = [];
   let pronto = false;
   let consulta = '';
@@ -36,6 +38,7 @@
   let abriuDaLista = false;
   let timer = null;
   let estado = {}; // estado dos 3 blocos da condição aberta
+  let formInicial = null; // dados para pré-preencher o formulário (duplicar / nome sugerido)
 
   /* ---------- armazenamento no aparelho ---------- */
 
@@ -56,13 +59,53 @@
     return Array.isArray(v) ? v.filter((x) => typeof x === 'string') : [];
   }
 
+  // limpa uma condição própria vinda do aparelho ou de um backup
+  function sanearCondicao(o) {
+    if (!o || typeof o !== 'object') return null;
+    if (typeof o.id !== 'string' || !o.id.startsWith('usr-')) return null;
+    if (typeof o.nome !== 'string' || !o.nome.trim()) return null;
+    const s = (v) => (typeof v === 'string' ? v : Array.isArray(v) ? v.filter((x) => typeof x === 'string').join('\n') : '');
+    const l = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : []);
+    return {
+      id: o.id,
+      nome: o.nome.trim(),
+      cid: typeof o.cid === 'string' ? o.cid : '',
+      tags: l(o.tags),
+      sinonimos: l(o.sinonimos),
+      sintomas: l(o.sintomas),
+      receita: s(o.receita),
+      orientacoes: s(o.orientacoes),
+      sinais_alarme: s(o.sinais_alarme),
+      revisado: o.revisado === true,
+      propria: true,
+    };
+  }
+
+  function carregarProprias() {
+    const v = lerLS(LS_PROPRIAS, []);
+    if (!Array.isArray(v)) return [];
+    const vistos = new Set();
+    return v.map(sanearCondicao).filter((c) => {
+      if (!c || vistos.has(c.id)) return false;
+      vistos.add(c.id);
+      return true;
+    });
+  }
+
   let versoes = lerLS(LS_VERSOES, {});
   if (!versoes || typeof versoes !== 'object' || Array.isArray(versoes)) versoes = {};
+  let proprias = carregarProprias();
   let favoritos = lerLista(LS_FAV);
   let recentes = lerLista(LS_REC);
 
   const agoraISO = () => new Date().toISOString();
   const unicos = (a) => [...new Set(a)];
+
+  function reconstruir() {
+    const ids = new Set(base.map((c) => c.id));
+    condicoes = base.concat(proprias.filter((c) => !ids.has(c.id)));
+    indice = condicoes.map(construirIndice);
+  }
 
   // salva (ou apaga, se o texto for igual ao original) a sua versão de um bloco
   function gravarVersao(id, campo, valor, orig) {
@@ -75,6 +118,34 @@
     versoes = copia;
     gravarLS(LS_ALTERADO, agoraISO());
     return true;
+  }
+
+  // numa condição própria, salvar altera a própria condição
+  function salvarCampoPropria(c, campo, valor) {
+    const antes = c[campo];
+    c[campo] = valor;
+    if (!gravarLS(LS_PROPRIAS, proprias)) { c[campo] = antes; return false; }
+    gravarLS(LS_ALTERADO, agoraISO());
+    return true;
+  }
+
+  function excluirPropria(id) {
+    const antes = proprias;
+    proprias = proprias.filter((c) => c.id !== id);
+    if (!gravarLS(LS_PROPRIAS, proprias)) {
+      proprias = antes;
+      alert('Não consegui excluir neste navegador.');
+      return;
+    }
+    gravarLS(LS_ALTERADO, agoraISO());
+    favoritos = favoritos.filter((x) => x !== id);
+    gravarLS(LS_FAV, favoritos);
+    recentes = recentes.filter((x) => x !== id);
+    gravarLS(LS_REC, recentes);
+    reconstruir();
+    abriuDaLista = false;
+    history.replaceState(null, '', '#/');
+    rotear();
   }
 
   function alternarFavorito(id) {
@@ -282,590 +353,3 @@
     const on = favoritos.includes(id);
     return (
       '<button type="button" class="estrela' + (on ? ' on' : '') + '" data-id="' + esc(id) + '"' +
-      (detalhe ? ' data-det="1"' : '') +
-      ' aria-pressed="' + on + '" aria-label="' + (on ? 'Remover dos favoritos' : 'Adicionar aos favoritos') + '">' +
-      (on ? '★' : '☆') + '</button>'
-    );
-  }
-
-  function atualizarEstrela(btn, id) {
-    const on = favoritos.includes(id);
-    btn.classList.toggle('on', on);
-    btn.textContent = on ? '★' : '☆';
-    btn.setAttribute('aria-pressed', String(on));
-    btn.setAttribute('aria-label', on ? 'Remover dos favoritos' : 'Adicionar aos favoritos');
-  }
-
-  function itemHTML(c, campos, compacto) {
-    const tags = compacto ? '' : (c.tags || []).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
-    let via = '';
-    if (!compacto && campos && consulta && !campos.has('nome') && !campos.has('cid')) {
-      const nomes = [...campos].map((k) => ROTULO[k]).filter(Boolean);
-      if (nomes.length) via = '<div class="via">encontrado em: ' + esc(nomes.join(', ')) + '</div>';
-    }
-    return (
-      '<li class="linha"><a class="item' + (compacto ? ' compacto' : '') + '" href="#/c/' + encodeURIComponent(c.id) + '">' +
-      '<div class="item-topo"><span class="item-nome">' + esc(c.nome) + '</span>' +
-      (c.cid ? '<span class="item-cid">' + esc(c.cid) + '</span>' : '') + '</div>' +
-      (tags ? '<div class="tags">' + tags + '</div>' : '') + via +
-      '</a>' + estrelaHTML(c.id, false) + '</li>'
-    );
-  }
-
-  function faixaBackup() {
-    if (!Object.keys(versoes).length) return '';
-    const ult = lerLS(LS_BACKUP, null);
-    const alt = lerLS(LS_ALTERADO, null);
-    if (ult && (!alt || ult >= alt)) return '';
-    return '<a class="faixa" href="#/backup">💾 Você tem textos editados sem backup. Toque para fazer o backup.</a>';
-  }
-
-  function renderHome() {
-    const todas = buscar('');
-    if (!todas.length) {
-      $app.innerHTML = '<div class="vazio"><p>Nenhuma condição no banco ainda.</p></div>';
-      return;
-    }
-    const porId = new Map(condicoes.map((c) => [c.id, c]));
-    const favs = favoritos.map((id) => porId.get(id)).filter(Boolean);
-    const recs = recentes.map((id) => porId.get(id)).filter(Boolean).slice(0, MOSTRAR_RECENTES);
-    let html = faixaBackup();
-    if (favs.length) {
-      html += '<h2 class="secao">★ Favoritos</h2><ul class="lista">' +
-        favs.map((c) => itemHTML(c, null, true)).join('') + '</ul>';
-    }
-    if (recs.length) {
-      html += '<h2 class="secao">Recentes</h2><ul class="lista">' +
-        recs.map((c) => itemHTML(c, null, true)).join('') + '</ul>';
-    }
-    html += '<h2 class="secao">Todas as condições (' + todas.length + ')</h2><ul class="lista">' +
-      todas.map((r) => itemHTML(r.c, r.campos, false)).join('') + '</ul>';
-    $app.innerHTML = html;
-  }
-
-  function renderLista() {
-    if (!norm(consulta)) { renderHome(); return; }
-    const res = buscar(consulta);
-    if (!res.length) {
-      $app.innerHTML =
-        '<div class="vazio"><p><strong>Nada encontrado</strong> para “' + esc(consulta) + '”.</p>' +
-        '<p>Tente outra palavra, o sintoma ou o código CID.</p></div>';
-      return;
-    }
-    $app.innerHTML =
-      '<p class="contagem">' + res.length + (res.length === 1 ? ' condição' : ' condições') + '</p>' +
-      '<ul class="lista">' + res.map((r) => itemHTML(r.c, r.campos, false)).join('') + '</ul>';
-  }
-
-  /* ---------- tela da condição ---------- */
-
-  const ajustar = (ta) => {
-    ta.style.height = 'auto';
-    ta.style.height = (ta.scrollHeight + 2) + 'px';
-  };
-
-  function blocoHTML(b) {
-    return (
-      '<section class="bloco ' + b.extra + '" data-campo="' + b.campo + '">' +
-      '<div class="bloco-topo"><h3>' + esc(b.titulo) + '</h3><span class="selo" data-selo hidden></span></div>' +
-      '<textarea class="campo" data-ta spellcheck="false" autocapitalize="off" autocorrect="off" ' +
-      'aria-label="' + esc(b.titulo) + '"></textarea>' +
-      '<button type="button" class="btn btn-copiar" data-copiar>Copiar ' + esc(b.titulo.toLowerCase()) + '</button>' +
-      '<div class="edicao" data-edicao>' +
-      '<button type="button" class="btn-sec" data-temp>Usar só desta vez</button>' +
-      '<button type="button" class="btn-sec principal" data-salvar>Salvar como minha versão</button>' +
-      '<button type="button" class="btn-sec principal" data-manter>Manter minha versão</button>' +
-      '<button type="button" class="btn-sec" data-restaurar>Restaurar original</button>' +
-      '</div></section>'
-    );
-  }
-
-  function montarBloco(c, b) {
-    const sec = $app.querySelector('[data-campo="' + b.campo + '"]');
-    const ta = sec.querySelector('[data-ta]');
-    const selo = sec.querySelector('[data-selo]');
-    const edicao = sec.querySelector('[data-edicao]');
-    const btnTemp = sec.querySelector('[data-temp]');
-    const btnSalvar = sec.querySelector('[data-salvar]');
-    const btnManter = sec.querySelector('[data-manter]');
-    const btnRest = sec.querySelector('[data-restaurar]');
-    const btnCopiar = sec.querySelector('[data-copiar]');
-
-    const orig = texto(c[b.campo]);
-    const reg = (versoes[c.id] || {})[b.campo];
-    const valido = !!reg && typeof reg.t === 'string';
-    const e = (estado[b.campo] = {
-      orig,
-      salvo: valido ? reg.t : null,
-      base: valido ? reg.b : null,
-      temp: false,
-      ta,
-    });
-    ta.value = e.salvo !== null ? e.salvo : orig;
-
-    function atualizar() {
-      const baseAtual = e.salvo !== null ? e.salvo : e.orig;
-      const sujo = ta.value !== baseAtual;
-      const desatualizado = e.salvo !== null && e.base !== e.orig;
-      let msg = '';
-      if (sujo) msg = e.temp ? 'Edição só desta vez (não salva)' : 'Editado, ainda não salvo';
-      else if (e.salvo !== null) msg = 'Sua versão salva';
-      if (desatualizado) msg += (msg ? ' · ' : '') + '⚠ o texto original foi atualizado';
-      selo.textContent = msg;
-      selo.hidden = !msg;
-      selo.className = 'selo' + (sujo || desatualizado ? ' aviso' : '');
-      btnTemp.hidden = btnSalvar.hidden = !(sujo && !e.temp);
-      btnManter.hidden = !(desatualizado && !sujo);
-      btnRest.hidden = !(e.salvo !== null || ta.value !== e.orig);
-      edicao.hidden = btnTemp.hidden && btnSalvar.hidden && btnManter.hidden && btnRest.hidden;
-    }
-
-    function salvar(valor) {
-      if (!gravarVersao(c.id, b.campo, valor, e.orig)) {
-        alert('Não consegui salvar neste navegador (modo anônimo ou armazenamento bloqueado).');
-        return;
-      }
-      e.salvo = valor === e.orig ? null : valor;
-      e.base = e.salvo === null ? null : e.orig;
-      e.temp = false;
-      atualizar();
-    }
-
-    ta.addEventListener('input', () => {
-      e.temp = false;
-      ajustar(ta);
-      atualizar();
-    });
-    btnTemp.addEventListener('click', () => { e.temp = true; atualizar(); });
-    btnSalvar.addEventListener('click', () => salvar(ta.value));
-    btnManter.addEventListener('click', () => salvar(e.salvo));
-
-    ligarBotao(btnRest, {
-      rotulo: 'Restaurar original',
-      aviso: 'Toque de novo para restaurar',
-      precisa: () => true,
-      acao: () => {
-        if (e.salvo !== null && !gravarVersao(c.id, b.campo, e.orig, e.orig)) {
-          alert('Não consegui apagar a sua versão salva neste navegador.');
-          return;
-        }
-        e.salvo = null;
-        e.base = null;
-        e.temp = false;
-        ta.value = e.orig;
-        ajustar(ta);
-        atualizar();
-      },
-    });
-
-    ligarBotao(btnCopiar, {
-      rotulo: 'Copiar ' + b.titulo.toLowerCase(),
-      aviso: 'Tem [campos]. Copiar mesmo assim?',
-      precisa: () => TEM_COLCHETES.test(ta.value),
-      acao: (btn, rotulo) =>
-        executarCopia(btn, rotulo, () => ta.value.trim(), () => { ta.focus(); ta.select(); }),
-    });
-
-    ajustar(ta);
-    atualizar();
-  }
-
-  function renderCondicao(id) {
-    const c = condicoes.find((x) => x.id === id);
-    if (!c) {
-      $app.innerHTML =
-        '<a class="voltar" href="#/">← Voltar</a>' +
-        '<div class="vazio"><p>Condição não encontrada.</p></div>';
-      return;
-    }
-    registrarRecente(c.id);
-    estado = {};
-    const tags = (c.tags || []).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
-    $app.innerHTML =
-      '<a class="voltar" href="#/">← Voltar</a>' +
-      '<article class="cond">' +
-      '<div class="titulo-cond"><h2>' + esc(c.nome) + '</h2>' + estrelaHTML(c.id, true) + '</div>' +
-      '<div class="meta">' + (c.cid ? '<span>CID-10 ' + esc(c.cid) + '</span>' : '') + tags + '</div>' +
-      (c.revisado === true ? '' : '<p class="aviso-rev">⚠ Conteúdo ainda não revisado por você. Confira antes de usar.</p>') +
-      (c.nota_revisao
-        ? '<details class="nota"><summary>Nota para revisão</summary><p>' + esc(texto(c.nota_revisao)) + '</p></details>'
-        : '') +
-      BLOCOS.map((b) => blocoHTML(b)).join('') +
-      '</article>' +
-      '<div class="barra-copiar"><button type="button" class="btn cheio" id="btn-tudo">Copiar tudo</button></div>';
-
-    BLOCOS.forEach((b) => montarBloco(c, b));
-
-    ligarBotao(document.getElementById('btn-tudo'), {
-      rotulo: 'Copiar tudo',
-      aviso: 'Tem [campos]. Copiar tudo mesmo assim?',
-      precisa: () => TEM_COLCHETES.test(montarTudo()),
-      acao: (btn, rotulo) => executarCopia(btn, rotulo, montarTudo),
-    });
-
-    window.scrollTo(0, 0);
-    requestAnimationFrame(() => BLOCOS.forEach((b) => ajustar(estado[b.campo].ta)));
-  }
-
-  /* ---------- backup ---------- */
-
-  function montarBackup() {
-    return {
-      app: NOME_APP,
-      formato: 1,
-      exportado_em: agoraISO(),
-      versoes,
-      favoritos,
-      recentes,
-    };
-  }
-
-  function nomeArquivo() {
-    const d = new Date();
-    const p = (n) => String(n).padStart(2, '0');
-    return 'backup-receita-rapida-' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '.json';
-  }
-
-  function baixar(nome, conteudo) {
-    const blob = new Blob([conteudo], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = nome;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 3000);
-  }
-
-  function marcarBackup() { gravarLS(LS_BACKUP, agoraISO()); }
-
-  function contarVersoes(v) {
-    let n = 0;
-    for (const id of Object.keys(v)) {
-      if (v[id] && typeof v[id] === 'object') n += Object.keys(v[id]).length;
-    }
-    return n;
-  }
-
-  function resumoExport() {
-    const ult = lerLS(LS_BACKUP, null);
-    return (
-      contarVersoes(versoes) + ' texto(s) editado(s) · ' + favoritos.length + ' favorito(s) · ' +
-      (ult && dataHora(ult) ? 'último backup: ' + dataHora(ult) : 'nenhum backup feito ainda')
-    );
-  }
-
-  function validarBackup(txt) {
-    let o;
-    try { o = JSON.parse(txt); } catch (e) { throw new Error('O texto não é um JSON válido.'); }
-    if (!o || o.app !== NOME_APP) throw new Error('Este arquivo não é um backup do Receita Rápida Plantão.');
-    if (o.formato !== 1) throw new Error('Versão de backup não suportada (formato ' + o.formato + ').');
-    const v = {};
-    let nVers = 0;
-    if (o.versoes && typeof o.versoes === 'object' && !Array.isArray(o.versoes)) {
-      for (const id of Object.keys(o.versoes)) {
-        if (id === '__proto__' || id === 'constructor' || id === 'prototype') continue;
-        const blocos = o.versoes[id];
-        if (!blocos || typeof blocos !== 'object') continue;
-        for (const campo of CAMPOS_TEXTO) {
-          const r = blocos[campo];
-          if (r && typeof r.t === 'string') {
-            if (!v[id]) v[id] = {};
-            v[id][campo] = { t: r.t, b: typeof r.b === 'string' ? r.b : '' };
-            nVers++;
-          }
-        }
-      }
-    }
-    const lista = (a) => (Array.isArray(a) ? a.filter((x) => typeof x === 'string') : []);
-    return {
-      versoes: v,
-      nVers,
-      favoritos: lista(o.favoritos),
-      recentes: lista(o.recentes),
-      data: typeof o.exportado_em === 'string' ? o.exportado_em : null,
-    };
-  }
-
-  // mescla o backup com o que já existe no aparelho
-  function aplicarImport(p) {
-    const novasV = JSON.parse(JSON.stringify(versoes));
-    for (const id of Object.keys(p.versoes)) {
-      const atual = novasV[id] && typeof novasV[id] === 'object' ? novasV[id] : {};
-      novasV[id] = Object.assign({}, atual, p.versoes[id]);
-    }
-    const novosF = unicos(favoritos.concat(p.favoritos));
-    const novosR = unicos(recentes.concat(p.recentes)).slice(0, MAX_RECENTES);
-    if (!gravarLS(LS_VERSOES, novasV) || !gravarLS(LS_FAV, novosF) || !gravarLS(LS_REC, novosR)) return false;
-    gravarLS(LS_ALTERADO, agoraISO());
-    versoes = novasV;
-    favoritos = novosF;
-    recentes = novosR;
-    return true;
-  }
-
-  function lerArquivo(f) {
-    if (f.text) return f.text();
-    return new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res(r.result);
-      r.onerror = () => rej(r.error);
-      r.readAsText(f);
-    });
-  }
-
-  function podeCompartilharArquivo() {
-    try {
-      const teste = new File(['{}'], 'x.json', { type: 'application/json' });
-      return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [teste] }));
-    } catch (e) { return false; }
-  }
-
-  function renderBackup() {
-    $app.innerHTML =
-      '<a class="voltar" href="#/">← Voltar</a>' +
-      '<h2>Backup</h2>' +
-      '<p class="suave">Seus textos editados, favoritos e recentes ficam só neste navegador. ' +
-      'Faça um backup de vez em quando e guarde o arquivo em um lugar seguro (Drive, e-mail, WhatsApp para você).</p>' +
-      '<section class="bloco"><div class="bloco-topo"><h3>Exportar</h3></div>' +
-      '<p class="suave" id="resumo-exp"></p>' +
-      '<div class="acoes-col">' +
-      '<button type="button" class="btn cheio" id="exp-baixar">Baixar arquivo de backup</button>' +
-      '<button type="button" class="btn-sec cheio" id="exp-compartilhar" hidden>Compartilhar / salvar em…</button>' +
-      '<button type="button" class="btn-sec cheio" id="exp-copiar">Copiar JSON</button>' +
-      '</div></section>' +
-      '<section class="bloco"><div class="bloco-topo"><h3>Importar</h3></div>' +
-      '<p class="suave">Escolha um arquivo de backup. Ele será mesclado ao que já existe neste aparelho.</p>' +
-      '<input type="file" id="imp-arquivo" accept=".json,application/json">' +
-      '<p class="suave">Ou cole o conteúdo do backup aqui:</p>' +
-      '<textarea class="campo" id="imp-texto" spellcheck="false" autocapitalize="off" autocorrect="off" ' +
-      'aria-label="Colar backup"></textarea>' +
-      '<button type="button" class="btn-sec cheio" id="imp-colado" style="margin-top:10px">Ler texto colado</button>' +
-      '<div id="imp-resumo"></div></section>';
-
-    const $resumoExp = document.getElementById('resumo-exp');
-    const atualizarResumo = () => { $resumoExp.textContent = resumoExport(); };
-    atualizarResumo();
-
-    // exportar
-    const btnBaixar = document.getElementById('exp-baixar');
-    btnBaixar.addEventListener('click', () => {
-      try {
-        baixar(nomeArquivo(), JSON.stringify(montarBackup(), null, 2));
-        marcarBackup();
-        atualizarResumo();
-        piscar(btnBaixar, 'Backup gerado ✓', 'Baixar arquivo de backup', 'ok');
-      } catch (e) {
-        piscar(btnBaixar, 'Falhou. Use "Copiar JSON"', 'Baixar arquivo de backup', 'erro', 3500);
-      }
-    });
-
-    const btnShare = document.getElementById('exp-compartilhar');
-    if (podeCompartilharArquivo()) {
-      btnShare.hidden = false;
-      btnShare.addEventListener('click', async () => {
-        try {
-          const arq = new File([JSON.stringify(montarBackup(), null, 2)], nomeArquivo(), { type: 'application/json' });
-          await navigator.share({ files: [arq], title: 'Backup Receita Rápida Plantão' });
-          marcarBackup();
-          atualizarResumo();
-          piscar(btnShare, 'Compartilhado ✓', 'Compartilhar / salvar em…', 'ok');
-        } catch (e) {
-          if (e && e.name === 'AbortError') return;
-          piscar(btnShare, 'Falhou. Use "Copiar JSON"', 'Compartilhar / salvar em…', 'erro', 3500);
-        }
-      });
-    }
-
-    const btnCopiarJson = document.getElementById('exp-copiar');
-    btnCopiarJson.addEventListener('click', async () => {
-      const ok = await executarCopia(btnCopiarJson, 'Copiar JSON', () => JSON.stringify(montarBackup(), null, 2));
-      if (ok) { marcarBackup(); atualizarResumo(); }
-    });
-
-    // importar
-    const $resumoImp = document.getElementById('imp-resumo');
-    let pendente = null;
-
-    function mostrarPendente(txt) {
-      try {
-        pendente = validarBackup(txt);
-      } catch (e) {
-        pendente = null;
-        $resumoImp.innerHTML = '<p class="erro-txt">' + esc(e.message) + '</p>';
-        return;
-      }
-      const p = pendente;
-      const quando = p.data && dataHora(p.data) ? ' de ' + esc(dataHora(p.data)) : '';
-      $resumoImp.innerHTML =
-        '<div class="resumo-import"><p><strong>Backup encontrado' + quando + '</strong><br>' +
-        p.nVers + ' texto(s) editado(s), ' + p.favoritos.length + ' favorito(s), ' +
-        p.recentes.length + ' recente(s).</p>' +
-        '<p>Será <strong>mesclado</strong> ao que já existe aqui. Se o mesmo bloco já tiver uma versão sua, ' +
-        'vale a do arquivo.</p>' +
-        '<button type="button" class="btn cheio" id="imp-confirmar">Confirmar importação</button></div>';
-      document.getElementById('imp-confirmar').addEventListener('click', () => {
-        if (pendente && aplicarImport(pendente)) {
-          pendente = null;
-          $resumoImp.innerHTML = '<p class="ok-txt">Importado ✓</p>';
-          atualizarResumo();
-        } else {
-          $resumoImp.innerHTML = '<p class="erro-txt">Não consegui gravar neste navegador.</p>';
-        }
-      });
-    }
-
-    const $arq = document.getElementById('imp-arquivo');
-    $arq.addEventListener('change', async () => {
-      const f = $arq.files && $arq.files[0];
-      if (!f) return;
-      try {
-        mostrarPendente(await lerArquivo(f));
-      } catch (e) {
-        $resumoImp.innerHTML = '<p class="erro-txt">Não consegui ler o arquivo.</p>';
-      }
-      $arq.value = '';
-    });
-
-    document.getElementById('imp-colado').addEventListener('click', () => {
-      const txt = document.getElementById('imp-texto').value.trim();
-      if (!txt) { $resumoImp.innerHTML = '<p class="erro-txt">Cole o conteúdo do backup primeiro.</p>'; return; }
-      mostrarPendente(txt);
-    });
-
-    window.scrollTo(0, 0);
-  }
-
-  /* ---------- erro ---------- */
-
-  function mostrarErro(e) {
-    $app.innerHTML =
-      '<div class="erro"><h2>Não consegui carregar o banco de condições</h2>' +
-      '<p><code>' + esc(e && e.message ? e.message : e) + '</code></p>' +
-      '<ul><li>Abra o app pelo endereço publicado (https://...), não pelo arquivo salvo no celular.</li>' +
-      '<li>Se você editou o <code>condicoes.json</code>, confira vírgulas, aspas e colchetes.</li></ul>' +
-      '<button class="btn" type="button" id="btn-recarregar">Tentar de novo</button></div>';
-    document.getElementById('btn-recarregar').addEventListener('click', () => location.reload());
-  }
-
-  /* ---------- rotas ---------- */
-
-  function rotear() {
-    if (!pronto) return;
-    const h = location.hash || '#/';
-    const m = h.match(/^#\/c\/(.+)$/);
-    if (h === '#/backup') {
-      renderBackup();
-    } else if (m) {
-      let id = m[1];
-      try { id = decodeURIComponent(id); } catch (e) {}
-      renderCondicao(id);
-    } else {
-      renderLista();
-      window.scrollTo(0, scrollLista);
-      scrollLista = 0;
-    }
-  }
-
-  $app.addEventListener('click', (e) => {
-    const est = e.target.closest('.estrela');
-    if (est) {
-      e.preventDefault();
-      const id = est.dataset.id;
-      if (!alternarFavorito(id)) {
-        alert('Não consegui salvar o favorito neste navegador.');
-        return;
-      }
-      if (est.dataset.det) {
-        atualizarEstrela(est, id);
-      } else {
-        const y = window.scrollY;
-        renderLista();
-        window.scrollTo(0, y);
-      }
-      return;
-    }
-    if (e.target.closest('a.item') || e.target.closest('a.faixa')) {
-      scrollLista = window.scrollY;
-      abriuDaLista = true;
-      return;
-    }
-    if (e.target.closest('.voltar')) {
-      e.preventDefault();
-      if (abriuDaLista) { abriuDaLista = false; history.back(); }
-      else { location.hash = '#/'; }
-    }
-  });
-
-  $btnBackup.addEventListener('click', () => {
-    if ((location.hash || '#/') === '#/backup') return;
-    scrollLista = window.scrollY;
-    abriuDaLista = true;
-  });
-
-  /* ---------- busca na tela ---------- */
-
-  function aoDigitar() {
-    consulta = $busca.value;
-    $limpar.hidden = !consulta;
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      const h = location.hash || '#/';
-      if (h !== '#/' && h !== '#') {
-        history.replaceState(null, '', '#/');
-        abriuDaLista = false;
-      }
-      scrollLista = 0;
-      renderLista();
-      window.scrollTo(0, 0);
-    }, 90);
-  }
-
-  $busca.addEventListener('input', aoDigitar);
-  $busca.addEventListener('keydown', (e) => { if (e.key === 'Enter') $busca.blur(); });
-  $limpar.addEventListener('click', () => {
-    $busca.value = '';
-    $busca.focus();
-    aoDigitar();
-  });
-
-  $tema.addEventListener('click', () => {
-    const el = document.documentElement;
-    const atual = el.dataset.tema ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
-    const novo = atual === 'escuro' ? 'claro' : 'escuro';
-    el.dataset.tema = novo;
-    try { localStorage.setItem('rrp_tema', novo); } catch (e) {}
-  });
-
-  window.addEventListener('hashchange', rotear);
-
-  /* ---------- carga do banco ---------- */
-
-  async function carregar() {
-    $app.innerHTML = '<p class="carregando">Carregando…</p>';
-    try {
-      const r = await fetch(URL_BANCO, { cache: 'no-cache' });
-      if (!r.ok) throw new Error('Arquivo ' + URL_BANCO + ' não encontrado (HTTP ' + r.status + ').');
-      const dados = await r.json();
-      if (!dados || !Array.isArray(dados.condicoes)) {
-        throw new Error('Formato inválido: falta a lista "condicoes" no JSON.');
-      }
-      const vistos = new Set();
-      condicoes = dados.condicoes.filter((c) => {
-        if (!c || !c.id || !c.nome) { console.warn('Condição ignorada (sem id ou nome):', c); return false; }
-        if (vistos.has(c.id)) { console.warn('id repetido, ignorado:', c.id); return false; }
-        vistos.add(c.id);
-        return true;
-      });
-      indice = condicoes.map(construirIndice);
-      pronto = true;
-      rotear();
-    } catch (e) {
-      mostrarErro(e);
-    }
-  }
-
-  carregar();
-})();
