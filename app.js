@@ -8,8 +8,8 @@
   const LS_REC = 'rrp_recentes'; // [ids]
   const LS_BACKUP = 'rrp_ultimo_backup'; // data ISO do último backup
   const LS_ALTERADO = 'rrp_alterado'; // data ISO da última mudança nos seus dados
-  const MAX_RECENTES = 10;
-  const MOSTRAR_RECENTES = 5;
+  const MAX_RECENTES = 3;
+  const MOSTRAR_RECENTES = 2;
   const NOME_APP = 'receita-rapida-plantao';
 
   // [campo do índice, peso na pontuação]
