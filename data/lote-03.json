@@ -1,0 +1,206 @@
+{
+  "versao": 1,
+  "lote": 3,
+  "fonte": "Ficha Verde, Prescrição no Pronto Socorro Adulto (Prescrevendo)",
+  "condicoes": [
+    {
+      "id": "colica-abdominal",
+      "nome": "Cólica abdominal",
+      "cid": "R10.4",
+      "tags": ["Gastroenterologia"],
+      "sinonimos": ["dor abdominal", "dor de barriga", "cólica", "cólica intestinal", "dor em cólica"],
+      "sintomas": ["dor abdominal em cólica", "dor de barriga", "cólica", "desconforto abdominal"],
+      "prescricao_ps": [
+        "CÓLICA LEVE",
+        "1) Dipirona 1000 mg/2 mL — diluir 2 mL em 18 mL de água destilada e administrar via EV.",
+        "2) Escopolamina 20 mg/mL — diluir 1 mL em 9 mL de água destilada e administrar via EV.",
+        "",
+        "CÓLICA MODERADA/INTENSA",
+        "1) Dipirona 500 mg/mL — diluir 2 mL (1 g) em 18 mL de água destilada e administrar via EV.",
+        "2) Escopolamina 20 mg/mL — diluir 2 mL em 8 mL de água destilada e administrar via EV.",
+        "OU",
+        "1) Escopolamina + Dipirona 20 mg + 2,5 g/5 mL — diluir 5 mL em 15 mL de água destilada e administrar via EV."
+      ],
+      "receita": [
+        "USO ORAL",
+        "1) Escopolamina 10 mg + dipirona 250 mg (Buscopan composto) — 1 caixa",
+        "Tomar 1 a 2 comprimidos, via oral, de 8 em 8 horas, se cólica abdominal."
+      ],
+      "orientacoes": [
+        "- Tomar o remédio só se tiver cólica, respeitando o intervalo de 8 em 8 horas.",
+        "- Beber líquidos e comer leve, evitando alimentos gordurosos e que causam gases."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Dor muito forte, contínua ou que piora, ou barriga endurecida.",
+        "- Vômitos persistentes, febre, sangue nas fezes ou fezes escuras.",
+        "- Não conseguir eliminar gases ou fezes, ou barriga muito inchada.",
+        "- Desmaio, tontura ou palidez."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Gastroenterologia. Outras opções do material: paracetamol 500 a 750 mg de 6 em 6 horas; dipirona 1 g/2 mL IM; escopolamina oral 10 mg, 1 a 2 comprimidos até 3 a 5 vezes ao dia (ou 20 a 40 gotas); Buscoduo (escopolamina 10 mg + paracetamol 500 mg), 1 a 2 comprimidos 3 vezes ao dia por até 3 dias; Tropinal, 1 a 2 comprimidos de 8 em 8 horas. Escopolamina EV: máximo 100 mg por dia. CID R10.4 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "constipacao",
+      "nome": "Constipação",
+      "cid": "K59.0",
+      "tags": ["Gastroenterologia"],
+      "sinonimos": ["prisão de ventre", "intestino preso", "constipação intestinal", "fezes endurecidas"],
+      "sintomas": ["prisão de ventre", "dificuldade para evacuar", "fezes ressecadas", "evacuação rara", "barriga inchada"],
+      "prescricao_ps": [
+        "1) Enema de glicerina 12% (clister glicerinado) 500 mL — aplicar o conteúdo de 1 frasco, via retal."
+      ],
+      "receita": [
+        "USO ORAL",
+        "1) Lactulose 667 mg/mL — 1 frasco",
+        "Tomar 15 mL, via oral, de 8 em 8 horas, se constipação."
+      ],
+      "orientacoes": [
+        "- Beber bastante água e comer alimentos ricos em fibras (frutas, verduras, cereais integrais).",
+        "- Fazer atividade física e criar um horário regular para ir ao banheiro."
+      ],
+      "sinais_alarme": [
+        "Voltar ao pronto atendimento se:",
+        "- Dor abdominal forte, vômitos, barriga muito inchada ou não conseguir eliminar gases.",
+        "- Sangue nas fezes, febre ou perda de peso sem explicação.",
+        "- A constipação continuar por semanas apesar do tratamento."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Gastroenterologia. Outras opções do material: psyllium em pó, 1 a 2 colheres de sopa em água ou suco, 2 vezes ao dia; lactulose 667 mg/mL, 10 a 20 mL 3 vezes ao dia; bisacodil 5 mg, 1 comprimido à noite; Minilax, conteúdo de 1 bisnaga via retal. CID K59.0 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "diarreia-aguda-geca",
+      "nome": "Diarreia aguda (GECA)",
+      "cid": "A09",
+      "tags": ["Gastroenterologia", "Infectologia"],
+      "sinonimos": ["GECA", "gastroenterite", "gastroenterocolite", "diarreia", "virose intestinal", "intestino solto"],
+      "sintomas": ["diarreia", "fezes líquidas", "dor abdominal", "náusea", "vômito", "febre", "fezes com sangue"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO ORAL",
+        "1) Sais de reidratação oral (ex.: Hidraplex, pó para solução oral) — 1 caixa",
+        "Diluir o conteúdo de 1 sachê em 1 litro de água filtrada ou fervida e tomar pelo menos 200 mL, via oral, a cada evacuação diarreica.",
+        "2) Ondansetrona 4 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 8 em 8 horas, se náusea ou vômito.",
+        "3) Escopolamina 10 mg + dipirona 250 mg (Buscopan composto) — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 8 em 8 horas, se cólica abdominal.",
+        "",
+        "[SE SINAIS DE DISENTERIA (fezes com sangue ou muco, febre, distensão do cólon):]",
+        "4) Ciprofloxacino 500 mg — 6 comprimidos",
+        "Tomar 1 comprimido, via oral, de 12 em 12 horas, por 3 dias.",
+        "",
+        "[SE SUSPEITA DE GIARDÍASE:]",
+        "5) Metronidazol 250 mg — 30 comprimidos",
+        "Tomar 2 comprimidos, via oral, de 8 em 8 horas, por 5 dias."
+      ],
+      "orientacoes": [
+        "- Aumentar a ingestão de líquidos caseiros (água, chá, suco, água de coco, sopas) ou usar o soro de reidratação oral: pelo menos 200 mL a cada evacuação diarreica.",
+        "- Evitar alimentos com lactose (leite e derivados) e cafeína enquanto durar a diarreia.",
+        "- Lavar bem as mãos e os alimentos."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Sangue ou muco nas fezes, febre alta ou diarreia por mais de 7 dias.",
+        "- Sinais de desidratação: sede intensa, boca seca, urina escassa ou escura, tontura.",
+        "- Vômitos que impedem de beber líquidos.",
+        "- Dor abdominal forte, sonolência ou confusão."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Gastroenterologia. As linhas entre colchetes (disenteria, giardíase) são condicionais: apague o que não se aplica. O material indica metronidazol 250 mg com quantidade de 10 comprimidos, mas 2 comprimidos de 8 em 8 horas por 5 dias dão 30; usei 30, confira. O material cita metronidazol por 5 dias na giardíase e até 10 dias na amebíase. Outras opções do material: sais Hidralyte 500 mL; antidiarreicos (evitar se fezes com sangue ou muco, febre, distensão do cólon, mais de 6 a 10 evacuações por dia ou mau estado geral): loperamida 2 mg, 2 comprimidos após a primeira evacuação e 1 após cada evacuação, por até 2 dias, máximo 8 comprimidos por dia (contraindicada em crianças), ou racecadotrila 100 mg de 8 em 8 horas por 2 a 3 dias; probióticos (eficácia não comprovada em adultos), como Floratil ou Repoflor 250 mg de 12 em 12 horas. Antimicrobianos exigem receita em 2 vias. CID A09 (sugestão minha, não consta na fonte): confira. Os sinais de alarme são rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "dispepsia-epigastralgia",
+      "nome": "Dispepsia / epigastralgia",
+      "cid": "K30",
+      "tags": ["Gastroenterologia"],
+      "sinonimos": ["dor no estômago", "azia", "má digestão", "gastrite", "epigastralgia", "queimação no estômago"],
+      "sintomas": ["dor no estômago", "dor na boca do estômago", "sensação de estufamento", "estômago cheio", "queimação", "náusea", "má digestão"],
+      "prescricao_ps": [
+        "1) Escopolamina + Dipirona 20 mg + 2,5 g/5 mL (Buscopan composto) — diluir 5 mL em 15 mL de água destilada e administrar via EV.",
+        "2) Bromoprida 10 mg/2 mL — diluir 2 mL em 18 mL de água destilada e administrar via EV.",
+        "OU",
+        "2) Metoclopramida 10 mg/2 mL — diluir 2 mL em SF 0,9% 50 mL e administrar via EV em 15 minutos."
+      ],
+      "receita": [
+        "USO ORAL",
+        "1) Omeprazol 20 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, 30 minutos antes do café da manhã, por 1 mês.",
+        "2) Domperidona 10 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, 30 minutos antes das refeições, se dor no estômago ou sensação de estômago cheio.",
+        "",
+        "[OPÇÃO no lugar do item 2 (apague o que não for usar):]",
+        "2) Digeplus (metoclopramida 7 mg + dimeticona 40 mg + pepsina 50 mg) — 1 caixa",
+        "Tomar 1 a 2 comprimidos, via oral, antes das principais refeições, se dor no estômago ou sensação de estômago cheio."
+      ],
+      "orientacoes": [
+        "- Tomar o omeprazol em jejum, 30 minutos antes do café da manhã.",
+        "- Evitar alimentos gordurosos e muito condimentados, café em excesso, álcool e cigarro.",
+        "- Fazer refeições menores e evitar deitar logo depois de comer."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Vômitos persistentes ou com sangue, fezes escuras ou com sangue.",
+        "- Dor muito forte, dificuldade para engolir ou perda de peso sem explicação.",
+        "- Dor no peito, suor frio ou falta de ar."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Gastroenterologia. O material traz duas receitas ambulatoriais: omeprazol + Digeplus, ou omeprazol + domperidona; coloquei a de domperidona no corpo e a outra como opção entre colchetes. CID K30 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "nausea-vomito",
+      "nome": "Náusea / vômito",
+      "cid": "R11",
+      "tags": ["Gastroenterologia"],
+      "sinonimos": ["enjoo", "vômito", "náusea", "ânsia de vômito", "vômitos"],
+      "sintomas": ["náusea", "enjoo", "vômito", "ânsia", "mal-estar"],
+      "prescricao_ps": [
+        "1) Bromoprida 10 mg/2 mL — diluir 2 mL em 18 mL de água destilada e administrar via EV lenta."
+      ],
+      "receita": [
+        "USO ORAL",
+        "1) Metoclopramida 10 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 8 em 8 horas, se náusea ou vômito."
+      ],
+      "orientacoes": [
+        "- Tomar líquidos em pequenos goles e voltar a comer aos poucos, com alimentos leves.",
+        "- Evitar alimentos gordurosos e muito condimentados."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Vômitos que não param ou que impedem de beber líquidos.",
+        "- Sangue no vômito, dor abdominal forte ou febre alta.",
+        "- Sinais de desidratação: boca seca, pouca urina, tontura.",
+        "- Dor de cabeça forte, rigidez no pescoço ou confusão."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Gastroenterologia. Outras opções do material. Via oral: bromoprida 10 mg, ondansetrona 4 a 8 mg (ambas de 8 em 8 horas) e Dramin B6 (dimenidrinato 50 mg + piridoxina 10 mg), 1 a 2 comprimidos de 6 em 6 horas. Via parenteral: metoclopramida 10 mg/2 mL + SF 0,9% 50 mL EV em 15 minutos; bromoprida 10 mg/2 mL + 18 mL de água destilada EV em 3 a 5 minutos; ondansetrona 4 mg/2 mL EV em 2 a 5 minutos (ou 8 mg/4 mL + SF 0,9% 50 mL EV em 15 minutos); Dramin B6 DL 10 mL + SF 0,9% 10 mL EV em 2 minutos. CID R11 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "pirose",
+      "nome": "Pirose (azia)",
+      "cid": "R12",
+      "tags": ["Gastroenterologia"],
+      "sinonimos": ["azia", "queimação", "refluxo", "queimação no peito", "má digestão"],
+      "sintomas": ["azia", "queimação no peito", "queimação na garganta", "refluxo", "gosto amargo na boca"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO ORAL",
+        "1) Hidróxido de alumínio 61,5 mg/mL — 1 frasco",
+        "Agitar bem o frasco e tomar 10 a 15 mL (1 colher de sopa), diluído em meio copo de água, 1 hora após as refeições, se azia ou má digestão."
+      ],
+      "orientacoes": [
+        "- Evitar deitar logo depois das refeições e elevar a cabeceira da cama.",
+        "- Evitar alimentos gordurosos, café, álcool, chocolate e cigarro.",
+        "- Fazer refeições menores."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Dor no peito, suor frio, falta de ar ou dor que vai para o braço ou a mandíbula.",
+        "- Dificuldade ou dor para engolir, vômito com sangue ou fezes escuras.",
+        "- Perda de peso sem explicação."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Gastroenterologia. No material, esta receita aparece na seção do pronto socorro, mas é de uso oral e serve para levar para casa; por isso coloquei em Receita. Outras opções do material: hidróxido de magnésio 80 mg/mL, 10 a 15 mL até 3 vezes ao dia; Gastrogel suspensão, 10 a 20 mL 2 vezes ao dia, ou comprimido mastigável, 2 comprimidos até 4 vezes ao dia. CID R12 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, não constam na fonte."
+    }
+  ]
+}
