@@ -1,0 +1,97 @@
+{
+  "versao": 1,
+  "lote": 2,
+  "fonte": "Ficha Verde, Prescrição no Pronto Socorro Adulto (Prescrevendo)",
+  "condicoes": [
+    {
+      "id": "cad-ehh",
+      "nome": "Cetoacidose diabética (CAD) / Estado hiperglicêmico hiperosmolar (EHH)",
+      "cid": "E10.1 / E11.1 / E11.0",
+      "tags": ["Endocrinologia", "Emergência"],
+      "sinonimos": ["CAD", "EHH", "cetoacidose diabética", "estado hiperglicêmico hiperosmolar", "descompensação diabética", "glicemia muito alta", "hiperglicemia grave"],
+      "sintomas": ["muita sede", "urinar muito", "vômitos", "dor abdominal", "respiração rápida", "hálito cetônico", "confusão", "desidratação", "glicemia elevada"],
+      "prescricao_ps": [
+        "ENQUANTO AGUARDA OS EXAMES",
+        "1) Dieta oral zero.",
+        "2) SF 0,9% 1500 mL, via EV, em 1 hora. [Referência: 15 a 20 mL/kg. Peso: ___ kg.]",
+        "3) SF 0,9% 500 mL/h, via EV, iniciar após o item 2. [Referência: 250 a 500 mL/h (4 mL/kg/h) até saírem os exames.]",
+        "4) Monitorização contínua.",
+        "5) Glicemia capilar de 1 em 1 hora.",
+        "6) Solicitar: gasometria arterial, hemograma, PCR, eletrólitos (Na, K, Cl), função renal (ureia e creatinina), EAS e radiografia de tórax. Identificar e tratar o fator desencadeante.",
+        "",
+        "DEPOIS DOS EXAMES: SORO CONFORME POTÁSSIO (K) E SÓDIO CORRIGIDO",
+        "Na corrigido = Na medido + 0,016 x (glicose sérica − 100). Manter o soro entre 250 e 1000 mL/h conforme o Na corrigido e o K.",
+        "- K < 3,3 e Na < 135: SF 0,9% 1000 mL + KCl 19,1% 10 mL (ou KCl 10% 20 mL), via EV, em 1 hora.",
+        "- K < 3,3 e Na ≥ 135: NaCl 0,45% 1000 mL + KCl 19,1% 10 mL (ou KCl 10% 20 mL), via EV, em 1 hora.",
+        "- K de 3,3 a 5,0 e Na < 135: insulina + SF 0,9% 1000 mL + KCl 19,1% 10 mL (ou KCl 10% 20 mL), via EV, em 2 horas.",
+        "- K de 3,3 a 5,0 e Na ≥ 135: insulina + NaCl 0,45% 1000 mL + KCl 19,1% 10 mL (ou KCl 10% 20 mL), via EV, em 2 horas.",
+        "- K > 5,0 e Na < 135: insulina + SF 0,9% 1000 mL, via EV, em 2 horas.",
+        "- K > 5,0 e Na ≥ 135: insulina + NaCl 0,45% 1000 mL, via EV, em 2 horas.",
+        "(NaCl 0,45% 500 mL = SF 0,9% 250 mL + água destilada 250 mL.)",
+        "",
+        "INSULINA",
+        "Insulina regular 100 UI (1 mL) + SF 0,9% 99 mL, via EV em bomba de infusão a 0,1 UI/kg/h. [Peso ___ kg = ___ mL/h. Exemplo: 70 kg = 7 mL/h.]",
+        "Glicemia capilar de 1 em 1 hora. Meta: queda de 50 a 75 mg/dL por hora. Se a queda for maior que 75 mg/dL/h: reduzir a bomba à metade. Se for menor que 50 mg/dL/h: dobrar a velocidade da bomba.",
+        "",
+        "PREVENIR HIPOGLICEMIA",
+        "- Se a glicemia ficar abaixo de 200 a 250 mg/dL antes da insulina: manter o soro (SF 0,9% ou NaCl 0,45%, com ou sem KCl), iniciar SG 5% 250 mL/h e glicemia capilar de 1 em 1 hora.",
+        "- Se a glicemia ficar abaixo de 200 a 250 mg/dL durante a insulina: manter o soro, manter a insulina com a vazão reduzida à metade, iniciar SG 5% 250 mL/h e glicemia capilar de 1 em 1 hora.",
+        "- Glicemia alvo: 150 a 200 mg/dL até a reversão da CAD/EHH."
+      ],
+      "receita": "",
+      "orientacoes": "",
+      "sinais_alarme": "",
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Endocrinologia. No material, a insulina só aparece nos grupos com K ≥ 3,3; nos grupos com K < 3,3 ela não é citada. O esquema de hidratação do material diz 250 a 500 mL/h (4 mL/kg/h) até os exames e depois 250 a 1000 mL/h; a prescrição de exemplo usa 1500 mL na primeira hora e 500 mL/h em seguida. Quadro de internação: sem receita, orientações ou sinais de alarme de alta. CID (sugestão minha, não consta na fonte; CAD no DM1 E10.1, no DM2 E11.1, EHH E11.0): confira."
+    },
+    {
+      "id": "hiperglicemia-assintomatica",
+      "nome": "Hiperglicemia assintomática (descompensação crônica)",
+      "cid": "R73.9",
+      "tags": ["Endocrinologia"],
+      "sinonimos": ["glicemia alta", "diabetes descompensado", "descompensação crônica do diabetes", "glicose alta sem sintomas", "hiperglicemia"],
+      "sintomas": ["glicemia elevada", "sem sintomas", "assintomático", "glicemia capilar alta"],
+      "prescricao_ps": "",
+      "receita": "",
+      "orientacoes": [
+        "- Manter o uso regular dos remédios do diabetes e não suspender por conta própria.",
+        "- Procurar a Unidade Básica de Saúde (Atenção Primária) para ajustar o tratamento e fazer o acompanhamento.",
+        "- Cuidar da alimentação e manter atividade física regular, conforme orientação médica."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Sede intensa, urinar muito ou perda rápida de peso.",
+        "- Náuseas, vômitos ou dor abdominal.",
+        "- Respiração rápida e profunda ou hálito com cheiro de fruta.",
+        "- Sonolência, confusão ou desmaio."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Endocrinologia. O material não traz prescrição para este quadro. Conduta do material: considerar ajuste do tratamento ambulatorial, reforçar a importância da adesão, encaminhar para a APS, orientar sobre sinais de alarme de CAD/EHH, e NÃO usar insulina no pronto socorro em descompensação crônica. Por isso a receita ficou em branco: defina o ajuste conforme o caso. Os itens de alimentação e atividade física e a lista de sinais de alarme são rascunho meu, não constam na fonte. CID R73.9 (sugestão minha, não consta na fonte): confira."
+    },
+    {
+      "id": "hipoglicemia",
+      "nome": "Hipoglicemia",
+      "cid": "E16.2",
+      "tags": ["Endocrinologia", "Emergência"],
+      "sinonimos": ["glicemia baixa", "queda de glicose", "hipoglicemia grave", "hipoglicemia leve", "hipo"],
+      "sintomas": ["tremor", "suor frio", "fraqueza", "fome", "confusão", "sonolência", "glicemia baixa", "rebaixamento do nível de consciência"],
+      "prescricao_ps": [
+        "HIPOGLICEMIA GRAVE (glicemia < 54 mg/dL) OU SEM CONDIÇÕES DE ENGOLIR",
+        "1) Glicose 50% — 40 mL, via EV, agora.",
+        "2) SG 5% 500 mL — via EV a 33 gotas/min (cerca de 100 mL/h) até estabilidade clínica.",
+        "3) Monitorar a glicemia capilar a cada 15 minutos.",
+        "[Sem acesso venoso: Glucagon 1 mg (frasco) — 1 mL, via IM.]",
+        "Após a reversão (glicemia > 70 mg/dL), oferecer um lanche.",
+        "",
+        "HIPOGLICEMIA LEVE (glicemia < 70 mg/dL) E CONSEGUE ENGOLIR",
+        "Oferecer 15 g de carboidrato por via oral, uma das opções: 1 colher de sopa rasa de açúcar ou de mel; OU 150 mL de refrigerante comum; OU 150 mL de suco de laranja; OU 3 balas de caramelo.",
+        "Após a reversão (glicemia > 70 mg/dL), oferecer um lanche."
+      ],
+      "receita": "",
+      "orientacoes": "",
+      "sinais_alarme": "",
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Endocrinologia. Limiares do material: leve < 70 mg/dL, grave < 54 mg/dL ou sem condições de engolir. O material não traz receita, orientações nem sinais de alarme de alta (por exemplo, investigar a causa e revisar a medicação), por isso ficaram em branco. CID E16.2 (sugestão minha, não consta na fonte): confira."
+    }
+  ]
+}
