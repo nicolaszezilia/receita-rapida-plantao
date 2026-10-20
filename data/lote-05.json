@@ -1,0 +1,243 @@
+{
+  "versao": 1,
+  "lote": 5,
+  "fonte": "Ficha Verde, Prescrição no Pronto Socorro Adulto (Prescrevendo), com ajustes conferidos em diretrizes públicas",
+  "condicoes": [
+    {
+      "id": "hordeolo",
+      "nome": "Hordéolo (terçol)",
+      "cid": "H00.0",
+      "tags": ["Oftalmologia"],
+      "sinonimos": ["terçol", "caroço na pálpebra", "inflamação da pálpebra", "furúnculo na pálpebra"],
+      "sintomas": ["caroço na pálpebra", "dor na pálpebra", "vermelhidão na pálpebra", "inchaço da pálpebra", "olho inchado"],
+      "prescricao_ps": "",
+      "receita": [
+        "MEDIDAS LOCAIS",
+        "Compressa morna: aplicar calor úmido no local afetado por 5 a 10 minutos, 3 a 5 vezes ao dia. Depois da compressa, fazer massagem suave no local, sem espremer.",
+        "",
+        "[OPCIONAL, se quiser associar antibiótico tópico:]",
+        "USO OFTÁLMICO",
+        "1) Tobramicina + dexametasona 3 mg + 1 mg/g (Tobradex) pomada oftálmica — 1 bisnaga",
+        "Aplicar uma fina camada no saco conjuntival do olho afetado, 3 vezes ao dia, por 5 dias."
+      ],
+      "orientacoes": [
+        "- Fazer a compressa morna e a massagem suave todos os dias, como indicado.",
+        "- Não espremer nem tentar furar o caroço.",
+        "- Lavar bem as mãos antes de mexer na região dos olhos e não usar maquiagem nem lentes de contato até melhorar."
+      ],
+      "sinais_alarme": [
+        "Voltar ao pronto atendimento se:",
+        "- A vermelhidão e o inchaço se espalharem para o rosto ou para a pálpebra toda, ou surgir febre.",
+        "- Dor forte ao mexer o olho, visão dupla ou piora da visão.",
+        "- O caroço não melhorar em 1 a 2 semanas, crescer ou voltar várias vezes."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Oftalmologia. A Ficha prescreve a pomada (Tobradex, ou Maxiflox D, 3 vezes ao dia por 5 dias) junto com a compressa morna e a massagem. Pelo meu conhecimento (não conferi com diretriz nesta rodada), a compressa morna é a base do tratamento e o antibiótico tópico costuma ser dispensável; por isso deixei a pomada como opção entre colchetes: decida. CID H00.0 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "conjuntivite-viral",
+      "nome": "Conjuntivite viral",
+      "cid": "B30.9",
+      "tags": ["Oftalmologia", "Infectologia"],
+      "sinonimos": ["olho vermelho", "conjuntivite", "conjuntivite aguda", "olho vermelho viral"],
+      "sintomas": ["olho vermelho", "olho lacrimejando", "secreção aquosa no olho", "coceira no olho", "areia no olho", "olho inchado"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO OFTÁLMICO",
+        "1) Carmelose sódica 0,5% (Ecofilm) colírio — 1 frasco",
+        "Aplicar 1 a 2 gotas no olho afetado, 3 a 4 vezes ao dia. Manter o colírio na geladeira.",
+        "",
+        "MEDIDAS LOCAIS",
+        "Compressa gelada por 15 minutos, 4 vezes ao dia. Lavar bem os olhos com SF 0,9% gelado para aliviar os sintomas."
+      ],
+      "orientacoes": [
+        "- É contagiosa: lavar as mãos com frequência e não compartilhar toalhas, fronhas ou colírios.",
+        "- Evitar coçar os olhos e não usar lentes de contato até melhorar.",
+        "- Costuma melhorar sozinha em 1 a 2 semanas."
+      ],
+      "sinais_alarme": [
+        "Voltar ao pronto atendimento se:",
+        "- Dor forte no olho, piora da visão ou muita sensibilidade à luz.",
+        "- Secreção amarela ou esverdeada em grande quantidade.",
+        "- Sem melhora em 7 a 10 dias.",
+        "- Usa lente de contato e o olho está dolorido."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Oftalmologia (receita de carmelose + compressa gelada + lavagem). Não conferi com diretriz nesta rodada. CID B30.9 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "conjuntivite-bacteriana",
+      "nome": "Conjuntivite bacteriana",
+      "cid": "H10.3",
+      "tags": ["Oftalmologia", "Infectologia"],
+      "sinonimos": ["olho vermelho", "conjuntivite", "olho com remela", "conjuntivite com pus", "conjuntivite aguda"],
+      "sintomas": ["olho vermelho", "secreção amarela no olho", "remela", "olho grudado ao acordar", "olho irritado"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO OFTÁLMICO",
+        "1) Ofloxacino 0,3% solução oftálmica — 1 frasco",
+        "Aplicar 1 gota no olho afetado, de 6 em 6 horas, por 7 dias.",
+        "",
+        "MEDIDAS LOCAIS",
+        "Lavar os olhos com SF 0,9% gelado, para higiene das pálpebras e dos cílios."
+      ],
+      "orientacoes": [
+        "- Lavar as mãos antes e depois de aplicar o colírio e não encostar o frasco no olho.",
+        "- É contagiosa: não compartilhar toalhas, fronhas ou colírios.",
+        "- Não usar lentes de contato até o fim do tratamento.",
+        "- Usar o colírio pelos 7 dias."
+      ],
+      "sinais_alarme": [
+        "Voltar ao pronto atendimento se:",
+        "- Dor forte no olho, piora da visão ou muita sensibilidade à luz.",
+        "- Sem melhora em 2 a 3 dias de colírio.",
+        "- Inchaço importante da pálpebra ou do rosto, ou febre.",
+        "- Usa lente de contato e o olho está dolorido."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Oftalmologia. Outra opção do material: tobramicina 0,3% colírio, 1 gota de 6 em 6 horas por 7 dias. Pelo meu conhecimento (não conferi com diretriz nesta rodada), a conjuntivite bacteriana costuma ser autolimitada e o antibiótico tópico é opcional. O material cita 'bisnaga' para a ofloxacina em solução; usei 'frasco'. CID H10.3 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "dor-lombar-mecanica",
+      "nome": "Dor lombar mecânica",
+      "cid": "M54.5",
+      "tags": ["Ortopedia", "Dor"],
+      "sinonimos": ["lombalgia", "dor nas costas", "dor lombar", "lumbago", "dor na coluna", "dor lombar baixa"],
+      "sintomas": ["dor nas costas", "dor na lombar", "dor ao se mexer", "dor ao agachar", "espasmo muscular", "rigidez lombar"],
+      "prescricao_ps": [
+        "1) Dipirona 1000 mg/2 mL — 2 mL + 18 mL de água destilada, via EV.",
+        "2) Diclofenaco 75 mg/3 mL — 3 mL, via IM.",
+        "3) Tiocolchicosídeo 4 mg/2 mL — 2 mL, via IM.",
+        "",
+        "[SOMENTE se dor muito intensa ou sem melhora, como último recurso:]",
+        "4) Tramadol 50 mg/mL — 2 mL (100 mg) + SF 0,9% 100 mL, via EV."
+      ],
+      "receita": [
+        "USO ORAL",
+        "1) Ibuprofeno 400 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 8 em 8 horas, depois das refeições, por até 5 dias seguidos, se dor.",
+        "2) Ciclobenzaprina 5 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 8 em 8 horas, por até 5 dias.",
+        "3) Dipirona 500 mg — 1 caixa",
+        "Tomar 1 a 2 comprimidos, via oral, de 6 em 6 horas, se dor.",
+        "",
+        "[Confirmar: sem úlcera ou sangramento digestivo, doença renal, uso de anticoagulante, gestação ou alergia a anti-inflamatório.]"
+      ],
+      "orientacoes": [
+        "- Repouso absoluto na cama NÃO é recomendado: manter-se ativo, retomando as atividades leves conforme a tolerância.",
+        "- Compressa morna por 20 minutos no local, 4 vezes ao dia.",
+        "- Corrigir a postura e os hábitos ergonômicos (cadeira, forma de levantar peso).",
+        "- Tomar o anti-inflamatório depois de comer."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Fraqueza nas pernas, ou formigamento e dormência na região entre as pernas (genitais e ânus).",
+        "- Perda de controle da urina ou do intestino, ou dificuldade para urinar.",
+        "- Febre, perda de peso sem explicação, ou história de câncer.",
+        "- Dor muito forte que não melhora com repouso ou que piora à noite.",
+        "- Dor depois de queda, pancada ou acidente.",
+        "- Dor que desce pela perna e vai piorando."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Ortopedia, com ajustes pela diretriz do ACP 2017 (lombalgia aguda: medidas sem remédio primeiro; AINE ou relaxante muscular se quiser remédio; paracetamol sem benefício; opioide só como último recurso). Mudanças minhas: troquei o paracetamol 750 mg da Ficha por dipirona e deixei o tramadol entre colchetes. Outras opções do material: tenoxicam, cetorolaco, cetoprofeno, associações com carisoprodol (Tandene, Trimusk, Torsilax, Mioflex A), codeína e paracetamol + tramadol ou codeína. Opioides e tramadol exigem receita de controle especial. Antes de usar o modelo, descartar sinais de alerta (déficit neurológico, cauda equina, febre, trauma, neoplasia, osteoporose ou corticoide). Anti-inflamatório: cautela ou contraindicação em doença renal, úlcera ou HDA prévia, anticoagulação, gestação e idosos. CID M54.5 (sugestão minha, não consta na fonte): confira. Sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "cerume-impactado",
+      "nome": "Cerume impactado",
+      "cid": "H61.2",
+      "tags": ["Otorrino"],
+      "sinonimos": ["cera no ouvido", "tampão de cera", "ouvido tapado", "cerume", "rolha de cera"],
+      "sintomas": ["ouvido tapado", "sensação de ouvido cheio", "diminuição da audição", "zumbido", "coceira no ouvido"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO OTOLÓGICO",
+        "1) Hidroxiquinolina + trolamina 0,4 + 140 mg/mL (Cerumin) — 1 caixa",
+        "Pingar 5 gotas no ouvido afetado e deixar agir por 5 minutos. Repetir de 8 em 8 horas, por 5 a 7 dias."
+      ],
+      "orientacoes": [
+        "- Voltar em 5 a 7 dias para reavaliação e lavagem do ouvido.",
+        "- Não usar cotonete, grampo ou objetos dentro do ouvido.",
+        "- Se tiver dor, secreção ou furo no tímpano, não use o remédio e procure atendimento."
+      ],
+      "sinais_alarme": [
+        "Procurar atendimento se:",
+        "- Dor forte no ouvido, secreção, sangramento ou febre.",
+        "- Tontura, zumbido forte ou perda súbita da audição."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Otorrinolaringologia. Outras opções do material: Aceratum (peróxido de carbamida 100 mg/mL), 5 gotas de 12 em 12 horas por até 4 dias; Oticerim (peróxido de ureia 100 mg/mL), 5 gotas de 8 em 8 horas por 4 dias. O material traz a reavaliação com lavagem otológica em 5 a 7 dias. Não conferi com diretriz nesta rodada. CID H61.2 (sugestão minha, não consta na fonte): confira. Orientações extras e sinais de alarme: rascunho meu, não constam na fonte."
+    },
+    {
+      "id": "faringoamigdalite-estreptococica",
+      "nome": "Faringoamigdalite estreptocócica",
+      "cid": "J03.0",
+      "tags": ["Respiratório", "Otorrino", "Pediatria"],
+      "sinonimos": ["amigdalite", "amigdalite bacteriana", "faringite estreptocócica", "dor de garganta bacteriana", "faringoamigdalite"],
+      "sintomas": ["dor de garganta", "dor para engolir", "odinofagia", "febre", "placas na garganta", "pus na garganta", "íngua no pescoço", "adenomegalia cervical"],
+      "prescricao_ps": [
+        "1) Penicilina G benzatina 1.200.000 UI (frasco) — reconstituir 1 frasco em 4 mL de água destilada e administrar via IM profundo, dose única. [Peso menor que 27 kg: 600.000 UI.]"
+      ],
+      "receita": [
+        "USO ORAL",
+        "1) Amoxicilina 500 mg — 20 cápsulas",
+        "Tomar 1 cápsula, via oral, de 12 em 12 horas, por 10 dias.",
+        "2) Dipirona 500 mg — 1 caixa",
+        "Tomar 2 comprimidos (1 g), via oral, de 6 em 6 horas, se dor ou febre. Máximo de 4 g por dia.",
+        "",
+        "[CRIANÇA, preencher e conferir: Amoxicilina suspensão. [peso] kg x 50 mg/kg = [___] mg, via oral, 1 vez ao dia (máximo 1000 mg por dia), por 10 dias.]",
+        "[Confirmar alergia a penicilina antes de prescrever.]"
+      ],
+      "orientacoes": [
+        "- Tomar o antibiótico todos os dias, até completar os 10 dias, mesmo que melhore antes.",
+        "- Beber bastante líquido e descansar. Alimentos frios, líquidos ou pastosos ajudam na dor para engolir.",
+        "- Evitar compartilhar copos, talheres e escova de dentes.",
+        "- Pode voltar às atividades após 24 horas de antibiótico, se estiver sem febre.",
+        "- Procurar reavaliação se não melhorar em 48 a 72 horas de tratamento."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Dificuldade para respirar ou para engolir a própria saliva.",
+        "- Voz abafada, dificuldade para abrir a boca, dor intensa só de um lado da garganta ou inchaço no pescoço.",
+        "- Febre alta que persiste após 48 a 72 horas de antibiótico.",
+        "- Vômitos que impeçam de tomar o remédio.",
+        "- Rigidez no pescoço ou sonolência excessiva.",
+        "- Nas semanas seguintes: manchas vermelhas na pele, dor ou inchaço nas articulações, urina escura ou inchaço no corpo."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Otorrinolaringologia, com ajuste pela diretriz da IDSA 2012 (penicilina ou amoxicilina por 10 dias; benzatina IM em dose única; amoxicilina 50 mg/kg em 1 vez ao dia com máximo de 1000 mg; corticoide adjuvante não recomendado). Mudança minha: a Ficha usa amoxicilina 500 mg de 8 em 8 horas (1,5 g por dia), acima do teto da diretriz; usei 500 mg de 12 em 12 horas (1 g por dia). Se preferir a da Ficha, troque para 8 em 8 horas e 30 cápsulas. Para criança, a diretriz também aceita 25 mg/kg de 12 em 12 horas (máximo 500 mg por dose). Alergia a penicilina: o esquema varia conforme o tipo de reação; defina o preferido do seu serviço. Antimicrobianos exigem receita em 2 vias. O texto não traz critérios para decidir tratar (ex.: Centor). A dipirona e as orientações e sinais de alarme são rascunho meu."
+    },
+    {
+      "id": "otite-externa",
+      "nome": "Otite externa",
+      "cid": "H60.9",
+      "tags": ["Otorrino"],
+      "sinonimos": ["dor de ouvido", "ouvido de nadador", "infecção no ouvido", "otite do nadador", "inflamação do canal do ouvido"],
+      "sintomas": ["dor de ouvido", "dor ao puxar a orelha", "coceira no ouvido", "secreção no ouvido", "ouvido tapado", "ouvido inchado"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO OTOLÓGICO",
+        "1) Ciprofloxacino + hidrocortisona 2 mg + 10 mg/mL (Otociriax) solução otológica — 1 frasco",
+        "Instilar 3 gotas no canal auditivo afetado, de 12 em 12 horas, por 7 dias.",
+        "",
+        "USO ORAL",
+        "2) Dipirona 500 mg — 1 caixa",
+        "Tomar 1 a 2 comprimidos, via oral, de 6 em 6 horas, se dor."
+      ],
+      "orientacoes": [
+        "- Manter o canal do ouvido limpo e seco.",
+        "- No banho, proteger o ouvido com algodão embebido em óleo.",
+        "- Aplicar as gotas deitado de lado, com a orelha afetada para cima, e ficar assim por 30 segundos a alguns minutos. É mais fácil se outra pessoa aplicar.",
+        "- Não usar cotonete nem outros objetos dentro do ouvido."
+      ],
+      "sinais_alarme": [
+        "Voltar ao pronto atendimento se:",
+        "- Sem melhora em 48 a 72 horas de tratamento.",
+        "- Dor muito forte, inchaço atrás da orelha, febre ou dificuldade para mexer um lado do rosto.",
+        "- Diabetes ou imunossupressão com dor de ouvido que não passa (maior risco de complicação).",
+        "- Perda da audição, tontura ou saída de secreção com sangue."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Otorrinolaringologia, com ajuste pela diretriz da AAO-HNSF 2014 (tratamento tópico inicial, sem antibiótico oral; analgesia adequada; preparação não ototóxica se tubo ou perfuração; reavaliar se sem resposta em 48 a 72 horas). Mudanças minhas: a Ficha usa o Elotin (fluocinolona + neomicina + polimixina B + lidocaína), 3 gotas de 8 em 8 horas por 7 dias; troquei pelo Otociriax (ciprofloxacino + hidrocortisona, 3 gotas de 12 em 12 horas por 7 dias, que também está no material), porque neomicina e polimixina preocupam se houver perfuração. Terceira opção do material: ciprofloxacino solução otológica 3 mg/mL, 3 gotas de 12 em 12 horas por 7 dias. Acrescentei analgésico, que a diretriz destaca. CID H60.9 (sugestão minha, não consta na fonte): confira. Orientações extras e sinais de alarme: rascunho meu."
+    }
+  ]
+}
