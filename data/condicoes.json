@@ -1,45 +1,6 @@
 {
   "versao": 1,
-  "atualizado_em": "2026-10-17",
   "condicoes": [
-    {
-      "id": "faringoamigdalite-estreptococica",
-      "nome": "Faringoamigdalite estreptocócica",
-      "cid": "J03.0",
-      "tags": ["Respiratório", "Otorrino", "Pediatria"],
-      "sinonimos": ["amigdalite", "amigdalite bacteriana", "faringite estreptocócica", "dor de garganta bacteriana"],
-      "sintomas": ["dor de garganta", "dor para engolir", "odinofagia", "febre", "placas na garganta", "pus na garganta", "íngua no pescoço", "adenomegalia cervical"],
-      "receita": [
-        "USO ORAL",
-        "",
-        "1) Amoxicilina 500 mg (cápsula)",
-        "Tomar 1 cápsula, via oral, de 8 em 8 horas, por 10 dias.",
-        "",
-        "2) Dipirona 500 mg (comprimido)",
-        "Tomar 2 comprimidos (1 g), via oral, de 6 em 6 horas, se dor ou febre. Máximo de 4 g por dia.",
-        "",
-        "[CRIANÇA, preencher e conferir: Amoxicilina suspensão. [peso] kg x 50 mg/kg/dia, dividido em 3 doses = [___] mg por dose, via oral, de 8 em 8 horas, por 10 dias.]",
-        "[Confirmar alergia a penicilina antes de prescrever.]"
-      ],
-      "orientacoes": [
-        "- Tomar o antibiótico todos os dias, até completar os 10 dias, mesmo que melhore antes.",
-        "- Beber bastante líquido e descansar. Alimentos frios, líquidos ou pastosos ajudam na dor para engolir.",
-        "- Evitar compartilhar copos, talheres e escova de dentes.",
-        "- Pode voltar às atividades após 24 horas de antibiótico, se estiver sem febre.",
-        "- Procurar reavaliação se não melhorar em 48 a 72 horas de tratamento."
-      ],
-      "sinais_alarme": [
-        "Voltar imediatamente ao pronto atendimento se:",
-        "- Dificuldade para respirar ou para engolir a própria saliva.",
-        "- Voz abafada, dificuldade para abrir a boca, dor intensa só de um lado da garganta ou inchaço no pescoço.",
-        "- Febre alta que persiste após 48 a 72 horas de antibiótico.",
-        "- Vômitos que impeçam de tomar o remédio.",
-        "- Rigidez no pescoço ou sonolência excessiva.",
-        "- Nas semanas seguintes: manchas vermelhas na pele, dor ou inchaço nas articulações, urina escura ou inchaço no corpo."
-      ],
-      "revisado": false,
-      "nota_revisao": "Esquema-padrão adotado: amoxicilina VO por 10 dias. Alternativa comum: penicilina G benzatina IM em dose única (1.200.000 UI; 600.000 UI se < 27 kg). Alergia a penicilina: o esquema alternativo varia conforme o tipo de reação, então defina o preferido do seu serviço. Dose pediátrica: conferir com o protocolo local. O texto não traz critérios para decidir tratar (ex.: Centor). Antimicrobianos exigem receita em 2 vias."
-    },
     {
       "id": "cistite-aguda-nao-complicada",
       "nome": "Cistite aguda não complicada",
@@ -77,44 +38,7 @@
         "- Atraso menstrual ou suspeita de gravidez."
       ],
       "revisado": false,
-      "nota_revisao": "Modelo para mulher adulta, não gestante, sem sinais de pielonefrite e com função renal preservada. Nitrofurantoína: evitar em redução importante da função renal (o limiar varia entre fontes, conferir), na gestação (principalmente perto do termo) e na deficiência de G6PD. Homens, crianças, idosos frágeis, gestantes, ITU recorrente ou complicada: não usar este modelo. Duração (5 a 7 dias) e alternativas conforme protocolo e perfil de resistência locais. Antimicrobianos exigem receita em 2 vias."
-    },
-    {
-      "id": "lombalgia-aguda-inespecifica",
-      "nome": "Lombalgia aguda inespecífica",
-      "cid": "M54.5",
-      "tags": ["Ortopedia", "Dor"],
-      "sinonimos": ["dor lombar", "dor nas costas", "lumbago", "dor na coluna", "dor lombar baixa"],
-      "sintomas": ["dor nas costas", "dor na lombar", "dor ao se mexer", "dor ao agachar", "espasmo muscular", "rigidez lombar"],
-      "receita": [
-        "USO ORAL",
-        "",
-        "1) Dipirona 500 mg (comprimido)",
-        "Tomar 2 comprimidos (1 g), via oral, de 6 em 6 horas, se dor, por até 5 dias. Máximo de 4 g por dia.",
-        "",
-        "2) Ibuprofeno 600 mg (comprimido)",
-        "Tomar 1 comprimido, via oral, de 8 em 8 horas, após as refeições, por 3 a 5 dias.",
-        "",
-        "[Confirmar: sem úlcera ou sangramento digestivo, doença renal, uso de anticoagulante, gestação ou alergia a anti-inflamatório.]"
-      ],
-      "orientacoes": [
-        "- Manter-se ativo: evitar ficar de repouso na cama e retomar atividades leves conforme tolerar.",
-        "- Compressa morna na região por 15 a 20 minutos, algumas vezes ao dia, pode aliviar.",
-        "- Evitar carregar peso e movimentos de torção nos primeiros dias.",
-        "- Tomar o anti-inflamatório sempre depois de comer.",
-        "- A maioria melhora em dias a poucas semanas. Se não melhorar em até 2 semanas, procurar reavaliação."
-      ],
-      "sinais_alarme": [
-        "Voltar imediatamente ao pronto atendimento se:",
-        "- Fraqueza nas pernas, ou formigamento e dormência na região entre as pernas (genitais e ânus).",
-        "- Perda de controle da urina ou do intestino, ou dificuldade para urinar.",
-        "- Febre, perda de peso sem explicação, ou história de câncer.",
-        "- Dor muito forte que não melhora com repouso ou que piora à noite.",
-        "- Dor depois de queda, pancada ou acidente.",
-        "- Dor que desce pela perna e vai piorando."
-      ],
-      "revisado": false,
-      "nota_revisao": "Antes de usar o modelo, descartar sinais de alerta (déficit neurológico, síndrome da cauda equina, febre, trauma, neoplasia, osteoporose ou uso de corticoide). Anti-inflamatório: cautela ou contraindicação em doença renal crônica, úlcera ou HDA prévia, anticoagulação, gestação, HAS ou ICC descompensadas; em idosos considerar protetor gástrico. Relaxante muscular NÃO incluído (benefício incerto, causa sedação): defina se quer um padrão seu."
+      "nota_revisao": "Exemplo meu (será substituído pelo lote da Ficha Verde). Modelo para mulher adulta, não gestante, sem sinais de pielonefrite e com função renal preservada. Nitrofurantoína: evitar em redução importante da função renal (o limiar varia entre fontes, conferir), na gestação (principalmente perto do termo) e na deficiência de G6PD. Homens, crianças, idosos frágeis, gestantes, ITU recorrente ou complicada: não usar este modelo. Duração (5 a 7 dias) e alternativas conforme protocolo e perfil de resistência locais. Antimicrobianos exigem receita em 2 vias."
     }
   ]
 }
