@@ -1,0 +1,289 @@
+{
+  "versao": 1,
+  "lote": 7,
+  "fonte": "Ficha Verde, Prescrição no Pronto Socorro Adulto (Prescrevendo), com ajustes conferidos em diretrizes recentes",
+  "condicoes": [
+    {
+      "id": "agitacao-psicomotora",
+      "nome": "Agitação psicomotora",
+      "cid": "R45.1",
+      "tags": ["Psiquiatria", "Emergência"],
+      "sinonimos": ["agitação", "paciente agitado", "surto psicótico", "excitação psicomotora", "sedação rápida", "contenção química"],
+      "sintomas": ["agitação", "agressividade", "inquietação", "gritos", "comportamento violento", "confusão"],
+      "prescricao_ps": [
+        "1) Haloperidol 5 mg/mL — 1 mL (5 mg), via IM. Pode repetir a cada 30 minutos, se necessário (máximo de 15 a 30 mg por dia).",
+        "2) [Associação opcional:] Prometazina 50 mg/2 mL — 2 mL (50 mg), via IM, dose única."
+      ],
+      "receita": "",
+      "orientacoes": "",
+      "sinais_alarme": "",
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Psiquiatria. Conferência: o ensaio TREC-Rio (Brasil) mostrou haloperidol + prometazina melhor que haloperidol sozinho em rapidez e segurança; a política da ACEP de 2023 prefere droperidol ou antipsicótico atípico com midazolam, desaconselha midazolam isolado e alerta para não combinar olanzapina IM com benzodiazepínico parenteral. Não mudei as doses do material. Do meu conhecimento (não verificado agora): antes de sedar, procurar causa orgânica (hipoglicemia, intoxicação, abstinência, delirium); haloperidol e prometazina prolongam o QT e baixam o limiar convulsivo (cuidado na suspeita de abstinência alcoólica). O material não traz monitorização nem conduta pós-sedação. Quadro de emergência: sem receita, orientações ou sinais de alarme. CID R45.1 (sugestão minha, não consta na fonte): confira."
+    },
+    {
+      "id": "abstinencia-alcoolica",
+      "nome": "Síndrome de abstinência alcoólica",
+      "cid": "F10.3",
+      "tags": ["Psiquiatria", "Emergência"],
+      "sinonimos": ["abstinência de álcool", "delirium tremens", "tremor de abstinência", "retirada do álcool", "alcoolismo", "privação alcoólica"],
+      "sintomas": ["tremor", "suor", "ansiedade", "náusea", "coração acelerado", "agitação", "convulsão", "alucinações", "insônia"],
+      "prescricao_ps": [
+        "ABSTINÊNCIA MODERADA",
+        "1) Diazepam 10 mg — 1 comprimido, via oral, a cada hora, até melhora (máximo de 4 comprimidos, 40 mg por dia).",
+        "OU",
+        "1) Lorazepam 2 mg — 1 comprimido, via oral, a cada hora, até melhora (máximo de 5 comprimidos, 10 mg por dia).",
+        "",
+        "ABSTINÊNCIA GRAVE",
+        "1) Diazepam 10 mg/2 mL — 1 a 2 mL (5 a 10 mg), via EV, a cada 10 minutos, até melhora (máximo de 4 mL, 20 mg por dia).",
+        "",
+        "ACRESCENTADO POR MIM (não consta na Ficha; conferir o protocolo do serviço):",
+        "2) [Tiamina (vitamina B1) — dose e via conforme o protocolo do serviço, administrar antes de qualquer solução com glicose.]"
+      ],
+      "receita": "",
+      "orientacoes": "",
+      "sinais_alarme": "",
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Psiquiatria, com conferência pela diretriz ASAM 2020 (benzodiazepínicos como primeira linha; tiamina para prevenir encefalopatia de Wernicke; diazepam EV ou lorazepam após convulsão; fenobarbital como alternativa na abstinência grave, por quem tem experiência; carbamazepina ou gabapentina só se houver contraindicação a benzodiazepínico). Mudança minha: acrescentei a tiamina, que a Ficha não traz. Atenção: os tetos diários do material (40 mg de diazepam VO e 20 mg de diazepam EV por dia) são bem mais baixos que as doses usadas nas diretrizes (abstinência resistente é definida com mais de 40 mg de diazepam EV em 1 hora); defina o teto com o protocolo do serviço. A escala CIWA-Ar costuma orientar a dose e não consta no material. Do meu conhecimento (não verificado agora): em hepatopatia grave e idosos, lorazepam é preferido por não ter metabólitos ativos. Quadro de internação ou observação: sem receita, orientações ou sinais de alarme. CID F10.3 (sugestão minha, não consta na fonte; delirium tremens seria F10.4): confira."
+    },
+    {
+      "id": "crise-ansiedade-panico",
+      "nome": "Crise de ansiedade e crise de pânico",
+      "cid": "F41.0 / F41.9",
+      "tags": ["Psiquiatria"],
+      "sinonimos": ["ataque de pânico", "crise de pânico", "crise de ansiedade", "ansiedade", "síndrome do pânico", "ataque de nervos"],
+      "sintomas": ["palpitação", "falta de ar", "medo intenso", "tremor", "suor", "aperto no peito", "formigamento", "sensação de morte iminente"],
+      "prescricao_ps": [
+        "1) Clonazepam 2,5 mg/mL (gotas) — 5 gotas (cerca de 0,5 mg), via oral."
+      ],
+      "receita": "",
+      "orientacoes": [
+        "- Respirar devagar e fundo: inspirar contando até 4 e soltar o ar contando até 6, repetindo por alguns minutos.",
+        "- Evitar cafeína, energéticos e álcool.",
+        "- Procurar acompanhamento ambulatorial (psicoterapia e, se indicado, tratamento de manutenção).",
+        "- O remédio causa sono: não dirigir nem operar máquinas depois de tomar."
+      ],
+      "sinais_alarme": [
+        "Voltar ao pronto atendimento se:",
+        "- Dor no peito forte ou que não passa, falta de ar intensa, desmaio ou suor frio.",
+        "- Pensamentos de se machucar ou de acabar com a vida: procurar ajuda na hora (em todo o Brasil, o CVV atende pelo 188).",
+        "- Crises cada vez mais frequentes ou que atrapalham a vida."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Psiquiatria. Opções do material: alprazolam 0,25 a 0,5 mg VO (comprimido de 0,25 mg: 1 a 2; de 0,5 mg: meio a 2); clonazepam 0,25 a 0,5 mg VO (gotas 2,5 mg/mL: 3 a 6 gotas; comprimido de 0,5 mg: meio a 1); diazepam 5 mg VO (comprimido de 5 mg: 1; de 10 mg: meio). Confira o número de gotas por mg da sua apresentação. Benzodiazepínico exige receita de controle especial (notificação azul). Não conferi com diretriz nesta rodada. Do meu conhecimento (não verificado agora): benzodiazepínico serve só para uso curto e não é tratamento de manutenção; antes de fechar o diagnóstico, descartar causas orgânicas (IAM, embolia pulmonar, tireotoxicose, hipoglicemia, abstinência). O material não traz receita para levar. CID F41.0 (pânico) ou F41.9 (ansiedade, sem especificação), sugestão minha, não consta na fonte: confira. Orientações e sinais de alarme: rascunho meu."
+    },
+    {
+      "id": "colica-nefretica",
+      "nome": "Cólica nefrética",
+      "cid": "N23",
+      "tags": ["Urologia", "Emergência"],
+      "sinonimos": ["cólica renal", "pedra no rim", "cálculo renal", "litíase urinária", "nefrolitíase", "dor lombar em cólica"],
+      "sintomas": ["dor forte no flanco", "dor que desce para a virilha", "dor nas costas em cólica", "sangue na urina", "náusea", "vômito", "agitação pela dor"],
+      "prescricao_ps": [
+        "1) Dipirona 1 g/2 mL — diluir 2 mL em 18 mL de água destilada e administrar via EV.",
+        "2) Cetoprofeno 100 mg (frasco) — reconstituir 1 frasco em SF 0,9% 100 mL e administrar via EV em 30 minutos.",
+        "",
+        "[SE A DOR NÃO MELHOROU (último recurso):]",
+        "3) Tramadol 50 mg/mL — 2 mL (100 mg) + SF 0,9% 100 mL, via EV, em 30 minutos.",
+        "OU",
+        "3) Morfina 10 mg/mL — diluir 1 mL em 9 mL de SF 0,9% e administrar 2 a 5 mL (2 a 5 mg), via EV."
+      ],
+      "receita": "",
+      "orientacoes": [
+        "- Beber líquidos de forma regular, sem exagero.",
+        "- Se possível, coar a urina e guardar o cálculo que sair, para levar à consulta.",
+        "- Fazer o acompanhamento com o urologista."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Febre ou calafrios.",
+        "- Dor que não melhora com os remédios ou vômitos que não param.",
+        "- Não conseguir urinar ou urinar muito pouco.",
+        "- Tontura intensa, desmaio ou muita fraqueza."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Urologia. Conferência (EAU, NICE): AINE é a primeira escolha (dipirona e paracetamol também são analgésicos aceitos), opioide é segunda linha, e antiespasmódicos como a escopolamina não são recomendados na cólica renal; o esquema do material já está alinhado, então não mudei. Opção do material: diclofenaco 75 mg/3 mL IM ou cetorolaco 30 mg/mL, 0,5 a 1 mL EV, no lugar do cetoprofeno. Cuidado com AINE em doença renal, hipovolemia, úlcera ou gestação. Febre com cólica (obstrução infectada), anúria, rim único ou queda da função renal são emergências. A terapia expulsiva com tansulosina para cálculo ureteral distal selecionado aparece em diretrizes, mas não no material; decida com o protocolo. O material não traz receita para levar para casa, por isso ela ficou em branco. CID N23 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    },
+    {
+      "id": "cistite-aguda-nao-complicada",
+      "nome": "Cistite (ITU baixa)",
+      "cid": "N30.0",
+      "tags": ["Urologia", "Infectologia"],
+      "sinonimos": ["infecção urinária", "ITU baixa", "infecção de urina", "cistite", "ardência ao urinar"],
+      "sintomas": ["ardência ao urinar", "disúria", "urgência urinária", "vontade de urinar toda hora", "dor no baixo ventre", "dor suprapúbica", "urina com cheiro forte"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO ORAL",
+        "1) Nitrofurantoína 100 mg — 20 cápsulas",
+        "Tomar 1 cápsula, via oral, de 6 em 6 horas, por 5 dias, junto às refeições.",
+        "2) [Se disponível: Fenazopiridina 200 mg — 1 caixa. Tomar 1 comprimido, via oral, de 8 em 8 horas, por até 2 dias, se dor ao urinar.]",
+        "",
+        "[Confirmar: mulher adulta, não gestante, sem sinais de pielonefrite e sem doença renal.]"
+      ],
+      "orientacoes": [
+        "- Beber bastante água ao longo do dia.",
+        "- Não segurar a urina. Urinar com frequência e logo após relações sexuais.",
+        "- Higiene íntima sempre da frente para trás.",
+        "- Tomar o remédio junto com comida e até o fim dos 5 dias, mesmo que melhore antes.",
+        "- Os sintomas devem melhorar em 2 a 3 dias.",
+        "- Se os sintomas voltarem depois do tratamento, procurar atendimento (pode ser preciso exame de urina com cultura)."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Febre ou calafrios.",
+        "- Dor nas costas ou no flanco (lado do corpo).",
+        "- Náuseas e vômitos que impeçam de tomar o remédio.",
+        "- Sangue na urina que persiste, ou dificuldade para urinar.",
+        "- Sem melhora em 48 a 72 horas de tratamento.",
+        "- Confusão ou sonolência excessiva (principalmente em idosos).",
+        "- Atraso menstrual ou suspeita de gravidez."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Urologia, com conferência pela diretriz IDSA 2025 (cistite não complicada: nitrofurantoína por 5 dias, fosfomicina em dose única ou sulfametoxazol-trimetoprima por 3 dias como primeira linha; a nitrofurantoína não serve para infecção complicada). Opções do material: fosfomicina 3 g, 1 envelope VO em dose única; ciprofloxacino 500 mg de 12 em 12 horas por 3 dias; amoxicilina-clavulanato 875/125 mg de 12 em 12 horas por 7 dias; cefalexina 500 mg de 6 em 6 horas por 7 dias. As quinolonas e os betalactâmicos ficam como reserva (do meu conhecimento, não verificado agora); a escolha também depende do perfil de resistência local. A IDSA descreve a nitrofurantoína de 12 em 12 horas na apresentação de liberação prolongada; no Brasil o esquema comum de 6 em 6 horas do material usa a cápsula de 100 mg. Confirme a disponibilidade da fenazopiridina no Brasil (ela está entre colchetes por isso). Nitrofurantoína: evitar em redução importante da função renal, na gestação (principalmente perto do termo) e na deficiência de G6PD. Homens, crianças, idosos frágeis, gestantes e ITU recorrente ou complicada: não usar este modelo. Antimicrobianos exigem receita em 2 vias. CID N30.0 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    },
+    {
+      "id": "pielonefrite",
+      "nome": "Pielonefrite (ITU alta)",
+      "cid": "N10",
+      "tags": ["Urologia", "Infectologia"],
+      "sinonimos": ["infecção urinária alta", "ITU alta", "infecção no rim", "pielonefrite aguda"],
+      "sintomas": ["febre", "calafrios", "dor nas costas", "dor no flanco", "ardência ao urinar", "náusea", "vômito", "mal-estar"],
+      "prescricao_ps": [
+        "PRESCRIÇÃO HOSPITALAR",
+        "1) Ceftriaxona 1 g (frasco) — reconstituir 1 frasco em 10 mL de água destilada e diluir em SF 0,9% 100 mL; administrar a solução via EV em 30 minutos, a cada 24 horas, por 7 dias."
+      ],
+      "receita": [
+        "USO ORAL",
+        "1) Ciprofloxacino 500 mg — 14 comprimidos",
+        "Tomar 1 comprimido, via oral, de 12 em 12 horas, por 7 dias."
+      ],
+      "orientacoes": [
+        "- Tomar o antibiótico até o fim, nos horários indicados.",
+        "- Beber bastante líquido e repousar.",
+        "- Voltar para reavaliação se não houver melhora em 48 a 72 horas."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Febre que continua ou piora depois de 48 a 72 horas de antibiótico.",
+        "- Vômitos que impeçam de tomar o remédio.",
+        "- Tontura intensa, desmaio, confusão ou pouca urina.",
+        "- Dor forte nas costas que piora."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Urologia, com conferência pela diretriz IDSA 2025 (pielonefrite sem sepse: ceftriaxona 1 g EV a cada 24 horas; com risco de resistência ou sepse, associar aminoglicosídeo; duração de 5 dias com fluoroquinolona e de 7 dias com os outros antibióticos; 7 dias se bacteremia; considerar infectologia se obstrução, abscesso ou pielonefrite enfisematosa). Mudanças minhas: a receita do material trazia o ciprofloxacino sem o intervalo ('1 comprimido por 7 dias'); completei com de 12 em 12 horas. Acrescentei 'por 7 dias' na ceftriaxona hospitalar, que no esquema do material está no 'de 24 em 24 horas por 7 dias'. Opções do material: levofloxacino 750 mg VO 1 vez ao dia por 7 dias; ceftriaxona 1 g EV ou IM a cada 24 horas por 7 dias; ciprofloxacino 400 mg EV de 12 em 12 horas por 7 dias. Do meu conhecimento (não verificado agora): colher urocultura antes do antibiótico, e usar quinolona oral só se a resistência local for baixa. O modelo não serve para gestante, nem para obstrução, abscesso ou sepse. Antimicrobianos exigem receita em 2 vias. CID N10 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    },
+    {
+      "id": "dengue",
+      "nome": "Dengue",
+      "cid": "A90",
+      "tags": ["Infectologia", "Emergência"],
+      "sinonimos": ["dengue", "arbovirose", "febre da dengue", "suspeita de dengue", "dengue com sinais de alarme", "dengue grave"],
+      "sintomas": ["febre", "dor atrás dos olhos", "dor no corpo", "dor de cabeça", "manchas vermelhas na pele", "vômitos", "dor abdominal", "sangramento", "prostração"],
+      "prescricao_ps": [
+        "GRUPO C (SINAIS DE ALARME): internação em enfermaria por pelo menos 48 horas",
+        "1) Fase de expansão: SF 0,9% 10 mL/kg na primeira hora, via EV. [Peso ___ kg = ___ mL. Exemplo, 70 kg: 700 mL em 1 hora.]",
+        "   Reavaliar após 1 hora (sinais vitais, PA, diurese; desejável 1 mL/kg/h).",
+        "   Se houver melhora: manter SF 0,9% 10 mL/kg na segunda hora (exemplo, 70 kg: mais 700 mL).",
+        "   Se NÃO houver melhora: conduzir como grupo D.",
+        "2) Fase de manutenção (se houve melhora):",
+        "   Primeira fase: SF 0,9% 25 mL/kg em 6 horas, via EV. [Exemplo, 70 kg: 1750 mL a 97 gotas/min.]",
+        "   Segunda fase: SF 0,9% 25 mL/kg em 8 horas, via EV. [Exemplo, 70 kg: 1750 mL a 73 gotas/min.]",
+        "",
+        "GRUPO D (CHOQUE): internação em UTI por pelo menos 48 horas",
+        "1) Fase de expansão rápida: SF 0,9% 20 mL/kg em até 20 minutos, via EV. Pode repetir até 3 vezes se não houver melhora. [Exemplo, 70 kg: 1400 mL em 20 minutos.]",
+        "2) Se melhorar: seguir como grupo C (fase de manutenção).",
+        "3) Se a resposta for inadequada, avaliar o hematócrito:",
+        "   Hematócrito em elevação: albumina 0,5 a 1 g/kg. Preparar solução de albumina a 5% (para cada 100 mL: 25 mL de albumina 20% + 75 mL de SF 0,9%) e administrar via EV a 3 mL/kg/h. [Exemplo, 70 kg (0,5 g/kg): albumina 20% 175 mL + SF 0,9% 525 mL, via EV a 210 mL/h.]",
+        "   Hematócrito em queda e choque persistente: investigar hemorragia e coagulopatia de consumo.",
+        "   Hematócrito em queda e sem choque: avaliar desconforto respiratório, sinais de insuficiência cardíaca e hiperhidratação.",
+        "4) Reduzir ou interromper a infusão ao mínimo necessário se: fim do extravasamento de plasma, PA, pulso e perfusão normalizados, queda do hematócrito sem sangramento, diurese normal e resolução dos sintomas abdominais.",
+        "",
+        "ATENÇÃO: em idosos e em quem tem comorbidades (cardiopatia, doença renal), ajustar os volumes caso a caso, para evitar sobrecarga."
+      ],
+      "receita": [
+        "GRUPOS A E B (acompanhamento ambulatorial)",
+        "USO ORAL",
+        "1) Dipirona 500 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 6 em 6 horas, se dor ou febre.",
+        "2) Bromoprida 10 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 8 em 8 horas, se náusea ou vômito.",
+        "",
+        "HIDRATAÇÃO ORAL: ingerir [___] mL por dia (60 mL/kg/dia; peso [peso] kg), sendo 1/3 com sais de reidratação oral e 2/3 com líquidos caseiros (água, suco de frutas, soro caseiro, chás, água de coco). Exemplo, 70 kg: 4200 mL por dia, sendo 1400 mL de sais e 2800 mL de líquidos caseiros. Manter a hidratação durante todo o período de febre e por 24 a 48 horas depois da queda da febre.",
+        "NÃO usar AAS ou outros anti-inflamatórios."
+      ],
+      "orientacoes": [
+        "- Beber líquidos durante toda a febre e por 24 a 48 horas depois que a febre passar.",
+        "- Não usar AAS (aspirina) nem anti-inflamatórios, como ibuprofeno e diclofenaco.",
+        "- Repousar.",
+        "- Voltar para reavaliação no dia em que a febre passar ou no 5º dia da doença, ou antes, se aparecer qualquer sinal de alarme."
+      ],
+      "sinais_alarme": [
+        "Procurar imediatamente o serviço de urgência se:",
+        "- Dor forte e contínua na barriga.",
+        "- Vômitos que não param.",
+        "- Tontura ao levantar, desmaio ou muita fraqueza.",
+        "- Sangramento no nariz, na gengiva ou em outro local.",
+        "- Barriga inchada, falta de ar ou inchaço no corpo.",
+        "- Muita sonolência ou irritação.",
+        "- Urinar muito pouco."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Infecções virais, com conferência pelo manual do Ministério da Saúde de 2024 (fluxogramas). Mudança minha: a Ficha traz o grupo C como 20 mL/kg em 2 horas, repetível até 3 vezes; coloquei como no Ministério: 10 mL/kg na primeira hora, reavaliação, mais 10 mL/kg na segunda hora e, se não melhorar, conduzir como grupo D (o volume total nas duas primeiras horas é o mesmo). Manutenção (25 mL/kg em 6 horas e 25 mL/kg em 8 horas), expansão rápida do grupo D (20 mL/kg em 20 minutos) e hidratação oral (60 mL/kg/dia no adulto, 1/3 com sais) estão como no material. Criança, hidratação oral: até 10 kg, 130 mL/kg/dia; de 10 a 20 kg, 100 mL/kg/dia; acima de 20 kg, 80 mL/kg/dia. O material não traz: notificação compulsória, cartão de acompanhamento, prova do laço, critérios de classificação (grupos A a D), hemograma e solicitação de exames, dengue na gestação, nem a escolha de antitérmico na criança: siga os fluxogramas do Ministério. Os exemplos de 70 kg só servem de referência; recalcule pelo peso. CID A90 (sugestão minha, não consta na fonte): confira. As orientações e a lista de sinais de alarme em linguagem simples são adaptação minha do material."
+    },
+    {
+      "id": "resfriado",
+      "nome": "Resfriado",
+      "cid": "J00",
+      "tags": ["Respiratório", "Infecções virais"],
+      "sinonimos": ["gripe", "resfriado comum", "IVAS", "infecção de vias aéreas superiores", "coriza", "nariz escorrendo"],
+      "sintomas": ["coriza", "espirros", "nariz entupido", "tosse", "dor de garganta", "febre baixa", "dor no corpo", "dor de cabeça"],
+      "prescricao_ps": "",
+      "receita": [
+        "[ESCOLHA SOMENTE O QUE SE APLICA AOS SINTOMAS E APAGUE O RESTO]",
+        "",
+        "FEBRE E DOR:",
+        "USO ORAL",
+        "1) Dipirona 500 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 6 em 6 horas, se dor ou febre.",
+        "",
+        "CORIZA, ESPIRRO E NARIZ ENTUPIDO:",
+        "USO ORAL",
+        "1) Bronfeniramina + fenilefrina (Descon) — 1 frasco",
+        "Tomar 10 mL, via oral, de 6 em 6 horas, se nariz entupido, coriza ou espirros.",
+        "",
+        "FEBRE, DOR, CORIZA E NARIZ ENTUPIDO (COMBINAÇÃO):",
+        "USO ORAL",
+        "1) Cimegripe (paracetamol 400 mg + clorfeniramina 4 mg + fenilefrina 4 mg) — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 6 em 6 horas, se sintomas de resfriado.",
+        "",
+        "DOR DE GARGANTA:",
+        "1) Strepsils (flurbiprofeno 8,75 mg) pastilha — 1 caixa",
+        "Dissolver 1 pastilha na boca, a cada 3 a 6 horas, se desconforto na garganta (máximo de 5 pastilhas por dia).",
+        "",
+        "TOSSE SECA:",
+        "USO ORAL",
+        "1) Dropropizina 3 mg/mL — 1 frasco",
+        "Tomar 10 mL, via oral, de 8 em 8 horas, se tosse seca.",
+        "",
+        "TOSSE COM CATARRO:",
+        "USO ORAL",
+        "1) Ambroxol 30 mg/5 mL — 1 frasco",
+        "Tomar 5 mL, via oral, de 8 em 8 horas, se tosse com catarro."
+      ],
+      "orientacoes": [
+        "- Beber bastante líquido e descansar.",
+        "- Lavar o nariz com soro fisiológico para aliviar o entupimento.",
+        "- Não tomar ao mesmo tempo remédios que tenham a mesma substância (por exemplo, dipirona e a combinação com paracetamol).",
+        "- O resfriado costuma melhorar em 7 a 10 dias, e a tosse pode demorar mais."
+      ],
+      "sinais_alarme": [
+        "Voltar ao atendimento se:",
+        "- Febre por mais de 3 dias ou febre alta que volta depois de melhorar.",
+        "- Falta de ar, chiado no peito ou dor no peito.",
+        "- Dor de ouvido, dor forte no rosto ou secreção amarela por mais de 10 dias.",
+        "- Piora depois de uma melhora, ou sintomas por mais de 10 dias."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Infecções virais (resfriado). Não conferi com diretriz nesta rodada. O próprio material diz que há pouca evidência de benefício dos remédios para tosse (grau de recomendação D). Outras opções do material: paracetamol 500 mg de 6 em 6 horas ou ibuprofeno 400 mg de 8 em 8 horas para dor e febre; Decongex Plus 1 comprimido de 12 em 12 horas; Rilan Nasal 2% (cromoglicato) 2 aplicações em cada narina 4 vezes ao dia; brometo de ipratrópio 0,25 mg/mL, 20 a 40 gotas com SF 0,9% 5 mL, nebulizado 3 vezes ao dia; Benegripe ou Gripalcê ou Resfenol ou Fluviral; Coristina D; pastilhas Ciflogex ou Neopiridin; levodropropizina e cloperastina para tosse seca; guaifenesina, xarope de guaco, acetilcisteína, carbocisteína, bromexina, Vick 44E, Expec e Hytós para tosse com catarro. Do meu conhecimento (não verificado agora): não há indicação de antibiótico no resfriado comum; descongestionante com fenilefrina exige cuidado em hipertensão, glaucoma e gestação; flurbiprofeno é um AINE (cuidado com úlcera, doença renal e anticoagulantes). Muitos produtos combinados já contêm paracetamol ou dipirona: evite somar. CID J00 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    }
+  ]
+}
