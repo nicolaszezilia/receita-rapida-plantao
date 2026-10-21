@@ -1030,7 +1030,7 @@
       } catch (e) {
         if (!/não encontrado/.test(String(e && e.message))) falhasLotes.push('lotes.json');
       }
-      for (const nome of arquivos) {
+      for (const nome of arquivos.slice().reverse()) {
         try {
           const d = await buscarJSON('data/' + nome);
           if (!d || !Array.isArray(d.condicoes)) throw new Error('formato inválido');
