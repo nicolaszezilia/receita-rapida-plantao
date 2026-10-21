@@ -1,0 +1,235 @@
+{
+  "versao": 1,
+  "lote": 6,
+  "fonte": "Ficha Verde, Prescrição no Pronto Socorro Adulto (Prescrevendo), com ajustes conferidos em diretrizes recentes",
+  "condicoes": [
+    {
+      "id": "paralisia-de-bell",
+      "nome": "Paralisia de Bell",
+      "cid": "G51.0",
+      "tags": ["Otorrino", "Neurologia"],
+      "sinonimos": ["paralisia facial", "paralisia facial periférica", "boca torta", "rosto caído"],
+      "sintomas": ["boca torta", "não consegue fechar o olho", "fraqueza no rosto", "rosto caído de um lado", "olho seco", "dor atrás da orelha"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO ORAL",
+        "1) Prednisona 20 mg — 23 comprimidos",
+        "Tomar 3 comprimidos (60 mg), via oral, 1 vez ao dia, pela manhã, por 5 dias. Depois reduzir a dose a cada dia: dia 6, 2 comprimidos e meio (50 mg); dia 7, 2 comprimidos (40 mg); dia 8, 1 comprimido e meio (30 mg); dia 9, 1 comprimido (20 mg); dia 10, meio comprimido (10 mg).",
+        "",
+        "USO OFTÁLMICO",
+        "2) Carmelose sódica 0,5% (Ecofilm) colírio — 1 frasco",
+        "Pingar 1 a 2 gotas no olho afetado, 4 a 6 vezes ao dia.",
+        "3) [Pomada oftálmica lubrificante — 1 bisnaga. Aplicar no olho afetado à noite, ao deitar.]",
+        "",
+        "[OPCIONAL, só se paralisia grave ou completa, associado à prednisona:]",
+        "4) Aciclovir 400 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, de 4 em 4 horas, sem a dose da madrugada (5 vezes ao dia; sugestão: 6h, 10h, 14h, 18h, 22h), por [5 a 10] dias."
+      ],
+      "orientacoes": [
+        "- Tomar a prednisona de manhã, depois do café, todos os dias, na dose indicada.",
+        "- Proteger o olho que não fecha: colírio lubrificante durante o dia, pomada à noite e, para dormir, fechar a pálpebra com fita adesiva hipoalergênica.",
+        "- Usar óculos escuros e proteger o olho de poeira, vento e água.",
+        "- A maioria melhora em semanas a meses; manter o acompanhamento com o médico."
+      ],
+      "sinais_alarme": [
+        "Voltar ao pronto atendimento se:",
+        "- Dor forte no olho, vermelhidão ou queda da visão (pode ser lesão da córnea).",
+        "- Fraqueza em outras partes do corpo, dificuldade para falar ou engolir, dor de cabeça súbita e forte ou febre.",
+        "- Bolhas na orelha ou no ouvido, perda da audição ou tontura.",
+        "- Nenhum sinal de melhora em 3 semanas, ou piora."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Otorrinolaringologia, com ajuste pela literatura recente (corticoide oral em até 72 horas do início; antiviral isolado não recomendado; associado ao corticoide pode ajudar na paralisia grave ou completa). Mudanças minhas: o material usa 60 mg por 5 dias e depois 10 mg por 5 dias, sem redução gradual; usei a redução de 10 mg por dia nos 5 dias seguintes, como descrito em fontes recentes (alternativa do material: 60 mg por 7 dias). Antiviral: o material usa aciclovir 400 mg 5 vezes ao dia por 10 dias, ou valaciclovir 1000 mg 3 vezes ao dia por 7 dias, em sintomas graves; os ensaios clínicos usaram 5 dias (e valaciclovir 1000 mg por dia), então deixei o antiviral como opção entre colchetes, com a duração para você definir. A pomada à noite e a fita foram acrescentadas por mim, pela literatura. O material não traz como confirmar o diagnóstico nem outras causas de paralisia facial: descartar AVC e outras causas. CID G51.0 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    },
+    {
+      "id": "rinite-alergica-intermitente",
+      "nome": "Rinite alérgica intermitente",
+      "cid": "J30.4",
+      "tags": ["Otorrino", "Alergia"],
+      "sinonimos": ["rinite", "alergia no nariz", "nariz entupido", "rinite alérgica", "coriza alérgica"],
+      "sintomas": ["espirros", "coriza", "coceira no nariz", "nariz entupido", "coceira nos olhos", "lacrimejamento"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO ORAL",
+        "1) Bilastina 20 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, 1 vez ao dia (uma hora antes ou duas horas depois das refeições), enquanto houver sintomas.",
+        "",
+        "USO NASAL",
+        "2) Soro fisiológico 0,9% — 1 frasco",
+        "Fazer lavagem nasal com soro fisiológico, 3 vezes ao dia.",
+        "",
+        "[Se predominar o nariz entupido:]",
+        "3) Mometasona 50 mcg spray nasal — 1 unidade",
+        "Aplicar 1 a 2 jatos em cada narina, 1 vez ao dia."
+      ],
+      "orientacoes": [
+        "- Fazer a lavagem nasal com soro fisiológico 3 vezes ao dia.",
+        "- Tomar a bilastina em jejum (1 hora antes ou 2 horas depois das refeições) e só enquanto houver sintomas.",
+        "- Reduzir o contato com o que desencadeia: poeira, ácaros, mofo, pelos de animais e pólen."
+      ],
+      "sinais_alarme": [
+        "Voltar ao atendimento se:",
+        "- Falta de ar ou chiado no peito (pode ser asma).",
+        "- Febre, dor no rosto ou secreção amarelada por mais de 10 dias (pode ser sinusite).",
+        "- Os sintomas não melhorarem em 2 a 4 semanas de tratamento."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Otorrinolaringologia (bilastina + lavagem nasal). Pelas diretrizes recentes, o anti-hipertensivo... não se aplica aqui: o anti-histamínico oral de segunda geração é adequado para espirros e coceira, e o corticoide nasal é a opção mais eficaz para o nariz entupido; por isso incluí a mometasona como opção entre colchetes (acréscimo meu). Antihistamínicos de primeira geração devem ser evitados (sedação). CID J30.4 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    },
+    {
+      "id": "rinite-alergica-persistente",
+      "nome": "Rinite alérgica persistente",
+      "cid": "J30.4",
+      "tags": ["Otorrino", "Alergia"],
+      "sinonimos": ["rinite", "alergia no nariz", "nariz entupido", "rinite alérgica", "rinite crônica"],
+      "sintomas": ["nariz entupido", "coriza", "espirros", "coceira no nariz", "gotejamento no fundo da garganta", "sintomas há semanas"],
+      "prescricao_ps": "",
+      "receita": [
+        "USO NASAL",
+        "1) Mometasona 50 mcg spray nasal — 1 unidade",
+        "Aplicar 1 a 2 jatos em cada narina, 1 vez ao dia, por 30 dias.",
+        "2) Soro fisiológico 0,9% — 1 frasco",
+        "Fazer lavagem nasal com 20 mL de soro fisiológico, 3 vezes ao dia.",
+        "",
+        "[OPCIONAL, se coceira e espirros forem importantes:]",
+        "USO ORAL",
+        "3) Bilastina 20 mg — 1 caixa",
+        "Tomar 1 comprimido, via oral, 1 vez ao dia (uma hora antes ou duas horas depois das refeições), enquanto houver sintomas."
+      ],
+      "orientacoes": [
+        "- Usar a mometasona todos os dias, não só quando piora: o efeito completo aparece depois de alguns dias.",
+        "- Apontar o jato para o lado de fora do nariz (em direção à orelha do mesmo lado), não para o meio.",
+        "- Fazer a lavagem nasal com soro fisiológico 3 vezes ao dia.",
+        "- Reduzir o contato com poeira, ácaros, mofo, pelos de animais e pólen."
+      ],
+      "sinais_alarme": [
+        "Voltar ao atendimento se:",
+        "- Sangramento no nariz frequente ou que não para.",
+        "- Febre, dor no rosto ou secreção amarelada por mais de 10 dias (pode ser sinusite).",
+        "- Falta de ar ou chiado no peito (pode ser asma).",
+        "- Sem melhora em 2 a 4 semanas de uso regular."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Otorrinolaringologia, com ajuste pelas diretrizes recentes (Rhinitis 2020, ICAR 2023, ARIA 2024-2025): o corticoide nasal é a primeira linha e a monoterapia preferida na rinite persistente, e somar anti-histamínico oral ao corticoide nasal não acrescenta benefício. Mudança minha: o material prescreve bilastina + mometasona + lavagem; deixei a mometasona e a lavagem como base e a bilastina como opção entre colchetes. Se preferir a da Ficha, é só tirar os colchetes. CID J30.4 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    },
+    {
+      "id": "rinossinusite-bacteriana",
+      "nome": "Rinossinusite bacteriana aguda",
+      "cid": "J01.9",
+      "tags": ["Otorrino", "Infectologia"],
+      "sinonimos": ["sinusite", "sinusite bacteriana", "infecção no seio da face", "rinossinusite", "sinusite aguda"],
+      "sintomas": ["dor no rosto", "nariz entupido", "secreção amarela ou esverdeada", "dor de cabeça", "pressão no rosto", "febre", "gotejamento nasal"],
+      "prescricao_ps": "",
+      "receita": [
+        "MEDIDAS INICIAIS (quadro leve a moderado, sem sinais de gravidade)",
+        "USO NASAL",
+        "1) Soro fisiológico 0,9% — 1 frasco",
+        "Fazer lavagem nasal com soro fisiológico, 3 vezes ao dia.",
+        "USO ORAL",
+        "2) Dipirona 500 mg — 1 caixa",
+        "Tomar 1 a 2 comprimidos, via oral, de 6 em 6 horas, se dor ou febre.",
+        "",
+        "[ANTIBIÓTICO, somente se: sintomas há 10 dias ou mais sem melhora, OU piora depois de uma melhora inicial, OU quadro grave; e depois de conversar com o paciente:]",
+        "3) Amoxicilina + clavulanato 875 mg + 125 mg — 14 comprimidos",
+        "Tomar 1 comprimido, via oral, de 12 em 12 horas, por 7 dias."
+      ],
+      "orientacoes": [
+        "- Na maioria dos casos a sinusite melhora sozinha, sem antibiótico.",
+        "- Fazer a lavagem nasal com soro fisiológico 3 vezes ao dia.",
+        "- Se não melhorar em 7 dias, ou se piorar a qualquer momento, voltar para reavaliar o uso de antibiótico.",
+        "- Se receber antibiótico, tomar até o fim do tempo indicado."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Inchaço ou vermelhidão ao redor do olho, visão dupla, dor ao mexer o olho ou queda da visão.",
+        "- Dor de cabeça muito forte, rigidez no pescoço, confusão ou sonolência.",
+        "- Febre alta que persiste ou piora.",
+        "- Inchaço na testa ou no rosto."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Otorrinolaringologia, com ajuste pela diretriz AAO-HNSF 2025 (espera vigilante com decisão compartilhada como conduta preferida na rinossinusite bacteriana aguda não complicada; se antibiótico, amoxicilina com ou sem clavulanato por 5 a 10 dias, sendo comum sugerir 5 a 7 dias; amoxicilina-clavulanato em quadro moderado a grave, imunossuprimido ou risco de resistência; quinolona não é primeira linha). Mudança minha: o material prescreve direto o antibiótico; deixei o antibiótico como opção entre colchetes e acrescentei a lavagem nasal e o analgésico. Outras opções do material: amoxicilina 500 mg de 8 em 8 horas por 7 dias; levofloxacino 500 mg 1 vez ao dia por 7 dias (reserva, não primeira linha). Antimicrobianos exigem receita em 2 vias. Sinais de gravidade e critérios de imagem não constam no material. CID J01.9 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    },
+    {
+      "id": "crise-asmatica",
+      "nome": "Crise asmática",
+      "cid": "J45.9",
+      "tags": ["Pneumologia", "Emergência"],
+      "sinonimos": ["asma", "crise de asma", "broncoespasmo", "exacerbação de asma", "bronquite asmática"],
+      "sintomas": ["falta de ar", "chiado no peito", "aperto no peito", "tosse seca", "tosse à noite", "dificuldade para respirar"],
+      "prescricao_ps": [
+        "1) Salbutamol aerossol 100 mcg/dose — inalar 4 a 10 jatos (com espaçador), em 3 etapas (1 a cada 20 minutos na primeira hora); depois 4 a 10 jatos a cada hora, até melhora clínica. Começar com 4 jatos e aumentar 2 jatos a cada etapa, se necessário.",
+        "2) Ipratrópio 0,25 mg/mL — nebulizar 40 gotas (0,5 mg) com SF 0,9% 5 mL, em 3 etapas (1 a cada 20 minutos na primeira hora); depois 1 etapa a cada hora, até melhora clínica.",
+        "3) Corticoide sistêmico (escolher UM):",
+        "   Prednisona ou prednisolona 20 mg — 2 a 3 comprimidos (40 a 60 mg), via oral, agora.",
+        "   OU Hidrocortisona 100 mg (frasco) — diluir 2 frascos (200 mg) em SF 0,9% 50 mL e administrar via EV em 15 minutos.",
+        "   OU Metilprednisolona 125 mg/2 mL — diluir 1 mL (62,5 mg) em SF 0,9% 50 mL e administrar via EV.",
+        "4) Oxigênio suplementar, se SatO2 < 92% (alvo: 93 a 95%)."
+      ],
+      "receita": [
+        "USO INALATÓRIO",
+        "1) Salbutamol aerossol 100 mcg/dose — 1 unidade",
+        "Inalar 8 jatos a cada 20 minutos, se piora da falta de ar ou do chiado. Usar como medicação de resgate por até 7 dias. Se não melhorar, procurar serviço de urgência.",
+        "",
+        "USO ORAL",
+        "2) Prednisona 20 mg — 10 comprimidos",
+        "Tomar 2 comprimidos (40 mg), via oral, 1 vez ao dia, pela manhã, por 5 dias."
+      ],
+      "orientacoes": [
+        "- Manter as medicações de controle (por exemplo, o corticoide inalatório) e retornar ao ambulatório para ajustar o tratamento.",
+        "- Usar o espaçador com o aerossol, se tiver.",
+        "- Tomar a prednisona de manhã, depois do café.",
+        "- Evitar o que desencadeia as crises (fumaça, poeira, mofo, ar frio, infecções respiratórias)."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- A falta de ar não melhorar com o remédio de resgate, ou precisar dele com muita frequência.",
+        "- Dificuldade para falar frases inteiras, lábios ou pontas dos dedos arroxeados.",
+        "- Sonolência, confusão ou muito cansaço para respirar.",
+        "- Febre alta ou catarro amarelo-esverdeado."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Pneumologia. O esquema do material está alinhado com as diretrizes recentes (GINA 2025 e resumos recentes: salbutamol, ipratrópio e corticoide sistêmico; prednisona 40 a 50 mg por 5 a 7 dias; oxigênio com alvo de 93 a 95%), então não mudei as doses. O material usa oxigênio se SatO2 < 92%; acrescentei o alvo de 93 a 95% pela diretriz. A receita de resgate do material diz 8 jatos a cada 20 minutos, sem dizer por quanto tempo repetir; a diretriz fala de 4 a 10 jatos a cada 20 minutos na primeira hora: defina a duração desse ciclo. Do meu conhecimento (não verificado agora), as diretrizes recentes não recomendam usar só broncodilatador de resgate sem corticoide inalatório nos pacientes com asma persistente. CID J45.9 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu, exceto a manutenção das medicações de controle, que consta no material."
+    },
+    {
+      "id": "pneumonia-adquirida-comunidade",
+      "nome": "Pneumonia adquirida na comunidade",
+      "cid": "J18.9",
+      "tags": ["Pneumologia", "Infectologia"],
+      "sinonimos": ["PAC", "pneumonia", "pulmonia", "infecção no pulmão", "pneumonia comunitária"],
+      "sintomas": ["tosse", "febre", "falta de ar", "catarro", "dor ao respirar", "dor no peito", "calafrios"],
+      "prescricao_ps": [
+        "PRESCRIÇÃO HOSPITALAR (internação)",
+        "1) Ceftriaxona 1 g (frasco) — reconstituir 1 frasco em 10 mL de água destilada e diluir em SF 0,9% 100 mL; administrar via EV em 30 minutos, de 12 em 12 horas, por 7 dias.",
+        "2) Claritromicina 500 mg (frasco) — reconstituir 1 frasco em 10 mL de água destilada e diluir em SF 0,9% 250 mL; administrar via EV em 60 minutos, de 12 em 12 horas, por 7 dias."
+      ],
+      "receita": [
+        "PACIENTE SEM COMORBIDADES",
+        "USO ORAL",
+        "1) Amoxicilina 500 mg — 42 cápsulas",
+        "Tomar 2 cápsulas (1 g), via oral, de 8 em 8 horas, por 7 dias.",
+        "",
+        "PACIENTE COM COMORBIDADES",
+        "USO ORAL",
+        "1) Amoxicilina + clavulanato 875 mg + 125 mg — 14 comprimidos",
+        "Tomar 1 comprimido, via oral, de 12 em 12 horas, por 7 dias.",
+        "2) Azitromicina 500 mg — 5 comprimidos",
+        "Tomar 1 comprimido, via oral, 1 vez ao dia, por 5 dias."
+      ],
+      "orientacoes": [
+        "- Tomar o antibiótico até o fim, nos horários indicados.",
+        "- Beber bastante líquido e repousar; evitar fumar e fumaça.",
+        "- A febre e a tosse podem levar alguns dias para melhorar; a tosse pode durar semanas.",
+        "- Procurar reavaliação se não houver melhora em 48 a 72 horas."
+      ],
+      "sinais_alarme": [
+        "Voltar imediatamente ao pronto atendimento se:",
+        "- Falta de ar que piora, respiração muito rápida ou lábios arroxeados.",
+        "- Febre alta que não cede depois de 48 a 72 horas de antibiótico.",
+        "- Confusão, sonolência, tontura intensa ou desmaio.",
+        "- Dor no peito forte, tosse com sangue ou não conseguir beber líquidos."
+      ],
+      "revisado": false,
+      "nota_revisao": "Fonte: Ficha Verde, Pneumologia, com ajuste pela diretriz ATS/IDSA 2019. Mudança minha: a receita de exemplo do material usa amoxicilina-clavulanato também para quem não tem comorbidades; a diretriz recomenda amoxicilina 1 g 3 vezes ao dia (ou doxiciclina) nesse grupo, que também é a primeira opção do material, então coloquei a amoxicilina. Com comorbidades, a diretriz usa betalactâmico + macrolídeo ou doxiciclina, ou quinolona respiratória, como no material. Duração: a diretriz pede o mínimo de 5 dias e estabilidade clínica antes de parar; mantive 7 dias do material. Azitromicina: o material usa 500 mg por 5 dias; o esquema habitual da diretriz é 500 mg no primeiro dia e 250 mg nos 4 seguintes: confira. A decisão entre tratar em casa ou internar (PSI ou CURB-65) não consta no material. Outras opções do material: levofloxacino 750 mg 1 vez ao dia por 5 dias (via oral ou EV), cefotaxima 2 g EV de 8 em 8 horas, ampicilina/sulbactam 3 g EV de 6 em 6 horas, azitromicina 500 mg 1 vez ao dia por 5 dias. Antimicrobianos exigem receita em 2 vias. CID J18.9 (sugestão minha, não consta na fonte): confira. Orientações e sinais de alarme: rascunho meu."
+    }
+  ]
+}
